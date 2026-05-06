@@ -1,0 +1,434 @@
+---
+// =============================================================================
+//  Showcase — Sticky Cross-Fade Scroll Component
+//  ---------------------------------------------------------------------------
+//  Apple-style scrollytelling: the media stays sticky on the left, text scenes
+//  scroll past on the right, and media cross-fades between scenes.
+//
+//  Mobile (<50em): media stacks above each scene's text, no sticky.
+//  Desktop (≥50em): sticky stage left, scenes scroll right, IntersectionObserver
+//                   toggles which media is active.
+//  Reduced motion: cross-fade disabled, every scene shows its own media inline.
+//
+//  Usage:
+//    <Showcase
+//      title="Live aus der Praxis"
+//      intro="Drei Apps, mit denen ich heute arbeite."
+//      scenes={[
+//        {
+//          title: '...',
+//          description: '...',
+//          media: '/assets/showcases/app.mp4',
+//          mediaType: 'video',
+//          alt: '...',
+//        },
+//        // ... oder ohne media: zeigt Platzhalter
+//      ]}
+//      aspectRatio="4 / 3"
+//    />
+// =============================================================================
+
+export interface Scene {
+	title: string;
+	description: string;
+	/** Pfad zu Bild/Video, z.B. /assets/showcases/app.png — wenn leer wird Platzhalter angezeigt */
+	media?: string;
+	/** image (PNG/JPG/WebP/GIF) oder video (WebM/MP4) */
+	mediaType?: 'image' | 'video';
+	/** Optional: zweite Quelle für Video-Fallback (z.B. MP4 wenn primary WebM ist) */
+	mediaFallback?: string;
+	mediaFallbackType?: 'image' | 'video';
+	/** Alt-Text bzw. Hinweis was hier später hin soll */
+	alt?: string;
+	/** Zusätzlicher Hinweis im Platzhalter — z.B. "1280 × 800" */
+	dimensions?: string;
+	/** z.B. "PNG / WebM" — für Platzhalter */
+	format?: string;
+}
+
+interface Props {
+	title?: string;
+	intro?: string;
+	scenes: Scene[];
+	/** CSS aspect-ratio Wert, z.B. "4 / 3", "16 / 9", "9 / 16" — alle Medien sollten denselben Wert haben */
+	aspectRatio?: string;
+}
+
+const { title, intro, scenes, aspectRatio = '4 / 3' } = Astro.props;
+---
+
+<section class="showcase" aria-labelledby="showcase-heading">
+	{
+		(title || intro) && (
+			<header class="showcase-header stack gap-2 lg:gap-4">
+				{title && <h3 id="showcase-heading">{title}</h3>}
+				{intro && <p>{intro}</p>}
+			</header>
+		)
+	}
+
+	<div class="showcase-track" data-showcase-track style={`--showcase-aspect: ${aspectRatio};`}>
+		{/* Sticky stage — desktop only (hidden auf Mobile) */}
+		<div class="stage" aria-hidden="true">
+			<div class="media-stack">
+				{
+					scenes.map((scene, i) => (
+						<div class={`media${i === 0 ? ' is-active' : ''}`} data-index={i}>
+							{scene.media ? (
+								scene.mediaType === 'video' ? (
+									<video
+										autoplay
+										loop
+										muted
+										playsinline
+										preload="metadata"
+										aria-label={scene.alt || scene.title}
+									>
+										<source
+											src={scene.media}
+											type={scene.media.endsWith('.webm') ? 'video/webm' : 'video/mp4'}
+										/>
+										{scene.mediaFallback && (
+											<source
+												src={scene.mediaFallback}
+												type={scene.mediaFallback.endsWith('.webm') ? 'video/webm' : 'video/mp4'}
+											/>
+										)}
+									</video>
+								) : (
+									<img src={scene.media} alt={scene.alt || scene.title} loading="lazy" decoding="async" />
+								)
+							) : (
+								<div class="placeholder">
+									<div class="placeholder-frame">
+										<span class="placeholder-eyebrow">Asset folgt</span>
+										<span class="placeholder-label">{scene.alt || scene.title}</span>
+										{scene.dimensions && <span class="placeholder-dims">{scene.dimensions}</span>}
+										{scene.format && <span class="placeholder-format">{scene.format}</span>}
+									</div>
+								</div>
+							)}
+						</div>
+					))
+				}
+			</div>
+		</div>
+
+		{/* Scenes column — text + (mobile) inline media */}
+		<div class="scenes">
+			{
+				scenes.map((scene, i) => (
+					<article class="scene" data-index={i}>
+						<div class="scene-media-inline" aria-hidden="true">
+							{scene.media ? (
+								scene.mediaType === 'video' ? (
+									<video autoplay loop muted playsinline preload="metadata">
+										<source
+											src={scene.media}
+											type={scene.media.endsWith('.webm') ? 'video/webm' : 'video/mp4'}
+										/>
+										{scene.mediaFallback && (
+											<source
+												src={scene.mediaFallback}
+												type={scene.mediaFallback.endsWith('.webm') ? 'video/webm' : 'video/mp4'}
+											/>
+										)}
+									</video>
+								) : (
+									<img src={scene.media} alt="" loading="lazy" decoding="async" />
+								)
+							) : (
+								<div class="placeholder">
+									<div class="placeholder-frame">
+										<span class="placeholder-eyebrow">Asset folgt</span>
+										<span class="placeholder-label">{scene.alt || scene.title}</span>
+										{scene.dimensions && <span class="placeholder-dims">{scene.dimensions}</span>}
+										{scene.format && <span class="placeholder-format">{scene.format}</span>}
+									</div>
+								</div>
+							)}
+						</div>
+
+						<div class="scene-text">
+							<span class="scene-num">{String(i + 1).padStart(2, '0')}</span>
+							<h4>{scene.title}</h4>
+							<p>{scene.description}</p>
+						</div>
+					</article>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<style define:vars={{ aspect: aspectRatio }}>
+	.showcase {
+		display: grid;
+		gap: 3rem;
+	}
+
+	.showcase-header {
+		text-align: center;
+		max-width: 50ch;
+		margin-inline: auto;
+		font-size: var(--text-md);
+		color: var(--gray-300);
+	}
+	.showcase-header h3 {
+		font-size: var(--text-2xl);
+		color: var(--gray-0);
+	}
+
+	/* ---------- Track layout ---------- */
+	.showcase-track {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 2rem;
+	}
+
+	/* ---------- Stage (desktop sticky) ---------- */
+	.stage {
+		display: none; /* hidden on mobile, scene-media-inline takes over */
+	}
+	.media-stack {
+		position: relative;
+		width: 100%;
+		aspect-ratio: var(--showcase-aspect, 4 / 3);
+		border-radius: 1.5rem;
+		overflow: hidden;
+		background: var(--gradient-subtle);
+		border: 1px solid var(--gray-800);
+		box-shadow: var(--shadow-md);
+	}
+	.media {
+		position: absolute;
+		inset: 0;
+		opacity: 0;
+		transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+		pointer-events: none;
+	}
+	.media.is-active {
+		opacity: 1;
+		pointer-events: auto;
+	}
+	.media img,
+	.media video {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+
+	/* ---------- Scene-Media inline (mobile) ---------- */
+	.scene-media-inline {
+		width: 100%;
+		aspect-ratio: var(--showcase-aspect, 4 / 3);
+		border-radius: 1rem;
+		overflow: hidden;
+		background: var(--gradient-subtle);
+		border: 1px solid var(--gray-800);
+		margin-bottom: 1.5rem;
+	}
+	.scene-media-inline img,
+	.scene-media-inline video {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+
+	/* ---------- Scene text ---------- */
+	.scenes {
+		display: flex;
+		flex-direction: column;
+		gap: 4rem;
+	}
+	.scene {
+		display: flex;
+		flex-direction: column;
+	}
+	.scene-text {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+	.scene-num {
+		font-family: var(--font-mono, ui-monospace, monospace);
+		font-size: var(--text-sm);
+		letter-spacing: 0.1em;
+		color: var(--accent-regular);
+	}
+	.scene h4 {
+		font-size: var(--text-xl);
+		color: var(--gray-0);
+		margin: 0;
+		line-height: 1.2;
+	}
+	.scene p {
+		color: var(--gray-300);
+		margin: 0;
+		line-height: 1.55;
+	}
+
+	/* ---------- Placeholders (when media not yet provided) ---------- */
+	.placeholder {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background:
+			radial-gradient(ellipse at 30% 30%, rgba(255, 255, 255, 0.04), transparent 60%),
+			var(--gray-999);
+		position: relative;
+	}
+	.placeholder::before {
+		content: '';
+		position: absolute;
+		inset: 1rem;
+		border: 2px dashed var(--gray-700);
+		border-radius: 0.75rem;
+		pointer-events: none;
+	}
+	.placeholder-frame {
+		text-align: center;
+		padding: 2rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.4rem;
+		max-width: 80%;
+	}
+	.placeholder-eyebrow {
+		font-family: var(--font-mono, ui-monospace, monospace);
+		font-size: var(--text-xs);
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--accent-regular);
+	}
+	.placeholder-label {
+		font-family: var(--font-brand);
+		font-size: var(--text-md);
+		font-weight: 500;
+		color: var(--gray-100);
+	}
+	.placeholder-dims,
+	.placeholder-format {
+		font-family: var(--font-mono, ui-monospace, monospace);
+		font-size: var(--text-xs);
+		color: var(--gray-400);
+	}
+
+	/* ---------- Desktop layout: sticky stage, scrolling scenes ---------- */
+	@media (min-width: 50em) {
+		.showcase-track {
+			grid-template-columns: 1fr 1fr;
+			gap: 5rem;
+			align-items: start;
+		}
+		.stage {
+			display: block;
+			position: sticky;
+			top: 10vh;
+		}
+		.scene-media-inline {
+			display: none;
+		}
+		.scenes {
+			gap: 0;
+		}
+		.scene {
+			min-height: 75vh;
+			justify-content: center;
+		}
+		.scene h4 {
+			font-size: var(--text-3xl);
+		}
+		.scene p {
+			font-size: var(--text-lg);
+			max-width: 42ch;
+		}
+		.placeholder-label {
+			font-size: var(--text-lg);
+		}
+	}
+
+	/* ---------- Reduced motion: stack everything, no sticky cross-fade ---------- */
+	@media (prefers-reduced-motion: reduce) {
+		.stage {
+			display: none;
+		}
+		.scene-media-inline {
+			display: block;
+		}
+		.scenes {
+			gap: 4rem;
+		}
+		.scene {
+			min-height: auto;
+		}
+		.media {
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	// Cross-fade: observe each scene; the most-in-view scene's index → activate matching media.
+	// Only kicks in on desktop where the sticky stage is visible.
+
+	const init = () => {
+		const tracks = document.querySelectorAll<HTMLElement>('[data-showcase-track]');
+		if (!tracks.length) return;
+
+		// Respect reduced motion
+		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		if (reduceMotion) return;
+
+		// Only active on desktop layout
+		const desktopMQ = window.matchMedia('(min-width: 50em)');
+
+		tracks.forEach((track) => {
+			const medias = track.querySelectorAll<HTMLElement>('.stage .media');
+			const scenes = track.querySelectorAll<HTMLElement>('.scene');
+			if (!medias.length || !scenes.length) return;
+
+			const setActive = (idx: number) => {
+				medias.forEach((m) => {
+					const mIdx = Number(m.dataset.index);
+					m.classList.toggle('is-active', mIdx === idx);
+				});
+			};
+
+			// IntersectionObserver: when a scene crosses the viewport center, activate its media
+			const io = new IntersectionObserver(
+				(entries) => {
+					if (!desktopMQ.matches) return;
+					entries.forEach((e) => {
+						if (e.isIntersecting) {
+							const idx = Number((e.target as HTMLElement).dataset.index);
+							setActive(idx);
+						}
+					});
+				},
+				{
+					// Trigger when the scene's center crosses the viewport's center band
+					rootMargin: '-40% 0% -40% 0%',
+					threshold: 0,
+				}
+			);
+
+			scenes.forEach((s) => io.observe(s));
+
+			// On layout change (desktop ↔ mobile), reset to first media
+			desktopMQ.addEventListener('change', (e) => {
+				if (!e.matches) setActive(0);
+			});
+		});
+	};
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', init);
+	} else {
+		init();
+	}
+</script>

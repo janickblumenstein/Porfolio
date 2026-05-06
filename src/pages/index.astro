@@ -1,34 +1,76 @@
 ---
 import { getCollection } from 'astro:content';
-// Component Imports
+
+// Components
 import CallToAction from '../components/CallToAction.astro';
-// Page section components
 import ContactCTA from '../components/ContactCTA.astro';
 import Grid from '../components/Grid.astro';
 import Hero from '../components/Hero.astro';
 import Icon from '../components/Icon.astro';
 import Pill from '../components/Pill.astro';
 import PortfolioPreview from '../components/PortfolioPreview.astro';
+import Showcase from '../components/Showcase.astro';
 import Skills from '../components/Skills.astro';
-// Layout import — provides basic page elements: <head>, <nav>, <footer> etc.
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-// Content Fetching: List four most recent work projects
+// Single source of truth
+import { personal, tagline, experience, meta } from '../data/cv';
+
+// Content Collection — most recent 4 work projects
 const projects = (await getCollection('work'))
 	.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf())
 	.slice(0, 4);
+
+// Top 5 stations (from cv.ts) for the "Stationen" section
+const stations = experience.slice(0, 5);
+
+// Showcase scenes — leave `media` empty to render the placeholder.
+// Once you have screenshots/GIFs/videos, drop them in /public/assets/showcases/
+// and fill in the `media` + `mediaType` fields.
+const showcaseScenes = [
+	{
+		title: 'Apps unterwegs',
+		description:
+			'Servicetechniker dokumentieren Einsätze direkt beim Kunden — mobil, offline-fähig, mit Foto-Upload und Unterschrift. Was früher abends im Büro getippt wurde, ist jetzt vor Ort fertig.',
+		media: '', // z.B. '/assets/showcases/service-app.mp4'
+		mediaType: 'video' as const,
+		alt: 'Service-Techniker-App auf Smartphone',
+		dimensions: '750 × 1624 px (Mobile)',
+		format: 'WebM oder MP4 · Loop ohne Ton',
+	},
+	{
+		title: 'Workflows ohne Mailflut',
+		description:
+			'Anträge, Genehmigungen und Reminder laufen automatisiert via Power Automate. Statt verlorenen E-Mail-Threads gibt es einen klaren Status — für die Antragsteller, die Vorgesetzten und das HR-Team.',
+		media: '',
+		mediaType: 'image' as const,
+		alt: 'Power Automate Flow Designer',
+		dimensions: '1280 × 800 px',
+		format: 'PNG oder WebP',
+	},
+	{
+		title: 'Daten in Bewegung',
+		description:
+			'Dashboards in Power BI, die nicht nur Zahlen zeigen, sondern Entscheidungen vereinfachen. Live-Daten aus SAP, SharePoint und Dataverse, in einer Oberfläche zusammengeführt.',
+		media: '',
+		mediaType: 'image' as const,
+		alt: 'Power BI Dashboard',
+		dimensions: '1280 × 800 px',
+		format: 'PNG oder WebP',
+	},
+];
 ---
 
 <BaseLayout
-	title="Janick Blumenstein — Digitalisierung & Operations"
-	description="Wirtschaftsingenieur FH und Projektleiter Digitalisierung aus Brittnau. Spezialist für Microsoft Power Platform, Prozessautomatisierung und Operations Excellence."
+	title={`${personal.fullName} — Digitalisierung & Operations`}
+	description={tagline}
 >
 	<div class="stack gap-20 lg:gap-48">
 		<div class="wrapper stack gap-8 lg:gap-20">
 			<header class="hero">
 				<Hero
-					title="Hallo, ich bin Janick Blumenstein"
-					tagline="Wirtschaftsingenieur FH und Projektleiter Digitalisierung aus Brittnau, AG. Ich verbinde Operations-Verständnis mit Microsoft Power Platform, um Prozesse messbar zu vereinfachen."
+					title={`Hallo, ich bin ${personal.firstName} ${personal.lastName}`}
+					tagline={tagline}
 					align="start"
 				>
 					<div class="roles">
@@ -36,10 +78,14 @@ const projects = (await getCollection('work'))
 						<Pill><Icon icon="strategy" size="1.33em" /> Operations</Pill>
 						<Pill><Icon icon="trophy" size="1.33em" /> Digitalisierung</Pill>
 					</div>
+					<p class="status">
+						<span class="status-dot" aria-hidden="true"></span>
+						{meta.availabilityShort}
+					</p>
 				</Hero>
 
 				<img
-					alt="Janick Blumenstein"
+					alt={`${personal.fullName}, Portraitfoto`}
 					width="480"
 					height="620"
 					src="/assets/portrait.jpg"
@@ -50,11 +96,20 @@ const projects = (await getCollection('work'))
 		</div>
 
 		<main class="wrapper stack gap-20 lg:gap-48">
+			{/* ─────────  SHOWCASE — sticky cross-fade with screenshots/videos  ───────── */}
+			<Showcase
+				title="Live aus der Praxis"
+				intro="Drei Beispiele aus dem Alltag — die echten Apps, Workflows und Dashboards folgen als Screenshots, GIFs und Videos."
+				scenes={showcaseScenes}
+				aspectRatio="4 / 3"
+			/>
+
+			{/* ─────────  AUSGEWÄHLTE PROJEKTE  ───────── */}
 			<section class="section with-background with-cta">
 				<header class="section-header stack gap-2 lg:gap-4">
 					<h3>Ausgewählte Projekte</h3>
 					<p>
-						Eine Auswahl meiner Digitalisierungs­projekte aus den letzten Jahren — von Mitarbeiter-Apps
+						Eine Auswahl meiner Digitalisierungsprojekte aus den letzten Jahren — von Mitarbeiter-Apps
 						über automatisierte Workflows bis zu Reporting-Lösungen.
 					</p>
 				</header>
@@ -79,6 +134,7 @@ const projects = (await getCollection('work'))
 				</div>
 			</section>
 
+			{/* ─────────  STATIONEN  ───────── */}
 			<section class="section with-background bg-variant">
 				<header class="section-header stack gap-2 lg:gap-4">
 					<h3>Stationen</h3>
@@ -91,15 +147,13 @@ const projects = (await getCollection('work'))
 				<div class="gallery">
 					<Grid variant="small">
 						{
-							[
-								'Hunkeler AG · Projektleiter Digitalisierung',
-								'Franke Kaffeemaschinen · Strategischer Einkauf',
-								'Franke Kaffeemaschinen · F&E Konstrukteur',
-								'Franke Foodservice USA · CAD Engineer',
-								'HSLU · Wirtschaftsingenieur FH'
-							].map((station) => (
+							stations.map((station) => (
 								<li class="mention-card">
-									<p>{station}</p>
+									<p>
+										<strong>{station.organization}</strong>
+										<br />
+										<span>{station.role}</span>
+									</p>
 								</li>
 							))
 						}
@@ -130,6 +184,40 @@ const projects = (await getCollection('work'))
 		object-position: top;
 		border-radius: 1.5rem;
 		box-shadow: var(--shadow-md);
+	}
+
+	/* Status pill below the tagline */
+	.status {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-family: var(--font-mono, ui-monospace, monospace);
+		font-size: var(--text-sm);
+		color: var(--gray-300);
+		margin-top: 1rem;
+		padding: 0.4rem 0.8rem;
+		border: 1px solid var(--gray-800);
+		border-radius: 999px;
+		width: fit-content;
+	}
+	.status-dot {
+		width: 7px;
+		height: 7px;
+		border-radius: 50%;
+		background: #2f8f4e;
+		box-shadow: 0 0 0 0 rgba(47, 143, 78, 0.55);
+		animation: pulse-green 2.6s cubic-bezier(0.2, 0.7, 0.2, 1) infinite;
+	}
+	@keyframes pulse-green {
+		0% {
+			box-shadow: 0 0 0 0 rgba(47, 143, 78, 0.55);
+		}
+		70% {
+			box-shadow: 0 0 0 8px rgba(47, 143, 78, 0);
+		}
+		100% {
+			box-shadow: 0 0 0 0 rgba(47, 143, 78, 0);
+		}
 	}
 
 	@media (min-width: 50em) {
@@ -248,6 +336,10 @@ const projects = (await getCollection('work'))
 		background: var(--gradient-subtle);
 		box-shadow: var(--shadow-sm);
 		padding: 1rem;
+	}
+	.mention-card strong {
+		color: var(--gray-100);
+		font-weight: 500;
 	}
 
 	@media (min-width: 50em) {
