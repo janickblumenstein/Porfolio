@@ -17,29 +17,29 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 const projects = (await getCollection('work'))
 	.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf())
 	.slice(0, 4);
-
-// Full Astro Component Syntax:
-// https://docs.astro.build/basics/astro-components/
 ---
 
-<BaseLayout>
+<BaseLayout
+	title="Janick Blumenstein — Digitalisierung & Operations"
+	description="Wirtschaftsingenieur FH und Projektleiter Digitalisierung aus Brittnau. Spezialist für Microsoft Power Platform, Prozessautomatisierung und Operations Excellence."
+>
 	<div class="stack gap-20 lg:gap-48">
 		<div class="wrapper stack gap-8 lg:gap-20">
 			<header class="hero">
 				<Hero
-					title="Hello, my name is Jeanine White"
-					tagline="I am a Creative Developer who is currently based in Portland, Oregon."
+					title="Hallo, ich bin Janick Blumenstein"
+					tagline="Wirtschaftsingenieur FH und Projektleiter Digitalisierung aus Brittnau, AG. Ich verbinde Operations-Verständnis mit Microsoft Power Platform, um Prozesse messbar zu vereinfachen."
 					align="start"
 				>
 					<div class="roles">
-						<Pill><Icon icon="code" size="1.33em" /> Developer</Pill>
-						<Pill><Icon icon="microphone-stage" size="1.33em" /> Speaker</Pill>
-						<Pill><Icon icon="pencil-line" size="1.33em" /> Writer</Pill>
+						<Pill><Icon icon="code" size="1.33em" /> Power Platform</Pill>
+						<Pill><Icon icon="strategy" size="1.33em" /> Operations</Pill>
+						<Pill><Icon icon="trophy" size="1.33em" /> Digitalisierung</Pill>
 					</div>
 				</Hero>
 
 				<img
-					alt="Jeanine White smiling in a red plaid shirt and tortoise shell glasses"
+					alt="Janick Blumenstein"
 					width="480"
 					height="620"
 					src="/assets/portrait.jpg"
@@ -52,8 +52,11 @@ const projects = (await getCollection('work'))
 		<main class="wrapper stack gap-20 lg:gap-48">
 			<section class="section with-background with-cta">
 				<header class="section-header stack gap-2 lg:gap-4">
-					<h3>Selected Work</h3>
-					<p>Take a look below at some of my featured work for clients from the past few years.</p>
+					<h3>Ausgewählte Projekte</h3>
+					<p>
+						Eine Auswahl meiner Digitalisierungs­projekte aus den letzten Jahren — von Mitarbeiter-Apps
+						über automatisierte Workflows bis zu Reporting-Lösungen.
+					</p>
 				</header>
 
 				<div class="gallery">
@@ -70,7 +73,7 @@ const projects = (await getCollection('work'))
 
 				<div class="cta">
 					<CallToAction href="/work/">
-						View All
+						Alle Projekte
 						<Icon icon="arrow-right" size="1.2em" />
 					</CallToAction>
 				</div>
@@ -78,19 +81,25 @@ const projects = (await getCollection('work'))
 
 			<section class="section with-background bg-variant">
 				<header class="section-header stack gap-2 lg:gap-4">
-					<h3>Mentions</h3>
+					<h3>Stationen</h3>
 					<p>
-						I have been fortunate enough to receive praise for my work in several publications. Take
-						a look below to learn more.
+						Mein Weg führte vom Konstrukteur über den strategischen Einkauf bis zum heutigen
+						Projektleiter Digitalisierung.
 					</p>
 				</header>
 
 				<div class="gallery">
 					<Grid variant="small">
 						{
-							['Medium', 'BuzzFeed', 'The Next Web', 'awwwards.', 'TechCrunch'].map((brand) => (
+							[
+								'Hunkeler AG · Projektleiter Digitalisierung',
+								'Franke Kaffeemaschinen · Strategischer Einkauf',
+								'Franke Kaffeemaschinen · F&E Konstrukteur',
+								'Franke Foodservice USA · CAD Engineer',
+								'HSLU · Wirtschaftsingenieur FH'
+							].map((station) => (
 								<li class="mention-card">
-									<p>{brand}</p>
+									<p>{station}</p>
 								</li>
 							))
 						}
@@ -238,6 +247,7 @@ const projects = (await getCollection('work'))
 		color: var(--gray-300);
 		background: var(--gradient-subtle);
 		box-shadow: var(--shadow-sm);
+		padding: 1rem;
 	}
 
 	@media (min-width: 50em) {

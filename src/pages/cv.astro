@@ -1,0 +1,389 @@
+---
+// Standalone page — bypasses BaseLayout intentionally so the printed PDF
+// is clean black-on-white and ATS-friendly (no gradients, no noise textures).
+---
+
+<!doctype html>
+<html lang="de">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Lebenslauf — Janick Blumenstein</title>
+		<meta
+			name="description"
+			content="Lebenslauf Janick Blumenstein — Wirtschaftsingenieur FH, Projektleiter Digitalisierung."
+		/>
+		<meta name="robots" content="index, follow" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+	</head>
+	<body>
+		<!--
+			ATS-FRIENDLY DESIGN PRINCIPLES
+			- Single column layout (no tables for structure)
+			- Standard system fonts (Helvetica/Arial family)
+			- Plain text content (no images of text, no icon glyphs as text)
+			- Clear hierarchical structure (h1, h2, h3)
+			- A4 print at 14/16mm margins
+			- Black on white in print
+		-->
+
+		<div class="toolbar" role="toolbar" aria-label="Aktionen">
+			<a href="/">← zurück zur Übersicht</a>
+			<button type="button" id="printBtn" aria-label="Lebenslauf drucken oder als PDF speichern">
+				Drucken / als PDF speichern
+			</button>
+		</div>
+
+		<article class="page" itemscope itemtype="https://schema.org/Person">
+			<header class="cv-head">
+				<h1 itemprop="name">Janick Blumenstein</h1>
+				<p class="role" itemprop="jobTitle">
+					Wirtschaftsingenieur FH · Projektleiter Digitalisierung
+				</p>
+				<p class="contact-line">
+					<span itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
+						<span itemprop="streetAddress">Altachenring 2</span>,
+						<span itemprop="postalCode">4805</span>
+						<span itemprop="addressLocality">Brittnau</span>,
+						<span itemprop="addressRegion">AG</span>
+					</span>
+					<span class="sep">·</span>
+					<a href="mailto:janick.blumenstein@gmail.com" itemprop="email">janick.blumenstein@gmail.com</a>
+					<span class="sep">·</span>
+					<a href="tel:+41788882973" itemprop="telephone">+41 78 888 29 73</a>
+					<span class="sep">·</span>
+					<a href="https://www.linkedin.com/in/janick-blumenstein/" rel="noopener">LinkedIn</a>
+				</p>
+			</header>
+
+			<section>
+				<h2 class="section-title">Profil</h2>
+				<p class="summary">
+					Wirtschaftsingenieur FH mit Vertiefung Operations Management und über zehn Jahren
+					Berufserfahrung — vom Konstrukteur über den strategischen Einkauf bis zum heutigen
+					Projektleiter Digitalisierung. Spezialisiert auf Microsoft Power Platform, Microsoft
+					365-Administration sowie die Konzeption, Automatisierung und Einführung digitaler
+					Geschäftsprozesse. Erfahrung in Datenmodellierung, Reporting und Schnittstellen­integration.
+					Verhandlungssicher in Deutsch und Englisch.
+				</p>
+			</section>
+
+			<section>
+				<h2 class="section-title">Beruflicher Werdegang</h2>
+
+				<div class="entry">
+					<div class="entry-head">
+						<h3 class="entry-title">Projektleiter Digitalisierung</h3>
+						<span class="entry-date">01/2024 – heute</span>
+					</div>
+					<p class="entry-org">Hunkeler AG Paper Processing, Wikon</p>
+					<ul>
+						<li>
+							Einführung von Mitarbeiter- und Servicetechniker-Apps (Ferienplanung, Zeiterfassung,
+							Reporting) via Power Apps
+						</li>
+						<li>Umsetzung digitaler Anfragetools und SharePoint-Auswertungen</li>
+						<li>Automatisierung von Prozessen (Absenzmeldungen, KVP)</li>
+						<li>Leitung mehrerer Digitalisierungsprojekte von Konzeption bis Rollout</li>
+					</ul>
+				</div>
+
+				<div class="entry">
+					<div class="entry-head">
+						<h3 class="entry-title">Buyer Strategischer Einkauf</h3>
+						<span class="entry-date">04/2018 – 12/2023</span>
+					</div>
+					<p class="entry-org">Franke Kaffeemaschinen AG, Aarburg</p>
+					<ul>
+						<li>Verhandlung von Preislisten und strategisches Lieferanten­management</li>
+						<li>Leitung von Digitalisierungsprojekten mit Microsoft Power Platform</li>
+						<li>Automatisierung und Optimierung von Geschäftsprozessen</li>
+						<li>Erstellung von Reports und Dashboards (Power BI)</li>
+						<li>Integration von Microsoft 365-Lösungen in bestehende Abläufe</li>
+					</ul>
+				</div>
+
+				<div class="entry">
+					<div class="entry-head">
+						<h3 class="entry-title">Konstrukteur Forschung &amp; Entwicklung</h3>
+						<span class="entry-date">09/2014 – 03/2018</span>
+					</div>
+					<p class="entry-org">Franke Kaffeemaschinen AG, Aarburg</p>
+					<ul>
+						<li>Entwicklung von Bauteilen und Baugruppen</li>
+						<li>Ausarbeitung von technischen Anforderungen</li>
+						<li>Technische Teilprojekt­verantwortung</li>
+					</ul>
+				</div>
+
+				<div class="entry">
+					<div class="entry-head">
+						<h3 class="entry-title">Durchdiener Rettungstruppen</h3>
+						<span class="entry-date">10/2013 – 08/2014</span>
+					</div>
+					<p class="entry-org">Schweizer Armee · Dienstpflicht erfüllt</p>
+				</div>
+
+				<div class="entry">
+					<div class="entry-head">
+						<h3 class="entry-title">CAD Engineer (Praktikum)</h3>
+						<span class="entry-date">09/2012 – 09/2013</span>
+					</div>
+					<p class="entry-org">Franke Foodservice Systems Inc. · Smyrna, TN, USA</p>
+				</div>
+
+				<div class="entry">
+					<div class="entry-head">
+						<h3 class="entry-title">Lehre Konstrukteur EFZ</h3>
+						<span class="entry-date">2008 – 2012</span>
+					</div>
+					<p class="entry-org">Franke Schweiz AG · inkl. 6 Monate Werkstatt­praktikum</p>
+				</div>
+			</section>
+
+			<section>
+				<h2 class="section-title">Aus- und Weiterbildung</h2>
+
+				<div class="entry">
+					<div class="entry-head">
+						<h3 class="entry-title">Microsoft Power Platform &amp; M365 Administration</h3>
+						<span class="entry-date">aktuell</span>
+					</div>
+					<p class="entry-org">
+						Vorbereitung Microsoft PL-600 (Power Platform Solution Architect) · Microsoft Learn
+					</p>
+				</div>
+
+				<div class="entry">
+					<div class="entry-head">
+						<h3 class="entry-title">Wirtschaftsingenieur Innovation FH</h3>
+						<span class="entry-date">02/2017 – 01/2022</span>
+					</div>
+					<p class="entry-org">
+						HSLU Technik &amp; Architektur, Horw · Vertiefung Operations Management
+					</p>
+					<ul>
+						<li>
+							Schwerpunkte: Digital Business Process Engineering, Supply Chain Management, Operational
+							Excellence
+						</li>
+						<li>Strategisches- und Produktmanagement, Statistical &amp; Quantitative Data Analysis</li>
+						<li>Innovation Financing, Controlling, Development Excellence</li>
+						<li>Bachelorarbeit: Digitalization in Strategic Procurement</li>
+					</ul>
+				</div>
+
+				<div class="entry">
+					<div class="entry-head">
+						<h3 class="entry-title">Technische Berufsmaturität</h3>
+						<span class="entry-date">2008 – 2012</span>
+					</div>
+					<p class="entry-org">Berufs- und Weiterbildung Zofingen</p>
+				</div>
+			</section>
+
+			<section>
+				<h2 class="section-title">Kernkompetenzen</h2>
+				<div class="skill-group">
+					<strong>Microsoft Power Platform:</strong> Power Apps, Power Automate, Power BI, Dataverse
+				</div>
+				<div class="skill-group">
+					<strong>Microsoft 365:</strong> SharePoint Online, Excel inkl. VBA, Teams, Office, M365
+					Administration
+				</div>
+				<div class="skill-group">
+					<strong>ERP-Systeme:</strong> SAP FOX, ProAlpha, IFS, ECTR
+				</div>
+				<div class="skill-group">
+					<strong>Daten &amp; Reporting:</strong> Power BI, QlikSense, Datenmodellierung,
+					Schnittstellenintegration
+				</div>
+				<div class="skill-group">
+					<strong>Methoden:</strong> Prozessdigitalisierung, Low-Code-Entwicklung, Automatisierung,
+					Lean / Operational Excellence, Projektmanagement
+				</div>
+				<div class="skill-group">
+					<strong>Weitere Tools:</strong> Adobe Suite (InDesign, Illustrator, Photoshop), CAD (diverse
+					Systeme)
+				</div>
+			</section>
+
+			<section>
+				<h2 class="section-title">Sprachen</h2>
+				<ul class="langs">
+					<li><strong>Deutsch</strong> Muttersprache</li>
+					<li><strong>Englisch</strong> verhandlungssicher (mündlich &amp; schriftlich)</li>
+					<li><strong>Französisch</strong> mündlich &amp; schriftlich</li>
+					<li><strong>Italienisch</strong> Grundkenntnisse mündlich</li>
+				</ul>
+			</section>
+
+			<section>
+				<h2 class="section-title">Weitere Angaben</h2>
+				<div class="meta-line">
+					<div><strong>Geburtsdatum:</strong> 12.07.1992</div>
+					<div><strong>Familie:</strong> verheiratet, 2 Kinder</div>
+					<div><strong>Nationalität:</strong> Schweiz</div>
+					<div><strong>Führerschein:</strong> Kat. B, C1E</div>
+					<div><strong>Anstellungspensum:</strong> 80% verhandelbar ab 01/2026</div>
+					<div><strong>Kündigungsfrist:</strong> 3 Monate</div>
+					<div><strong>Referenzen:</strong> auf Wunsch</div>
+					<div>
+						<strong>Interessen:</strong> Technik &amp; Heimwerken, Sport, ehrenamtliche Mitarbeit
+					</div>
+				</div>
+			</section>
+		</article>
+
+		<style is:global>
+			:root {
+				color-scheme: light;
+			}
+			*, *::before, *::after { box-sizing: border-box; }
+			html { -webkit-text-size-adjust: 100%; }
+			body {
+				margin: 0;
+				font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial,
+					sans-serif;
+				font-size: 11pt;
+				line-height: 1.5;
+				color: #111;
+				background: #f4f4f2;
+				padding: 32px 16px;
+			}
+
+			.page {
+				max-width: 800px;
+				margin: 0 auto;
+				background: #fff;
+				padding: 56px 64px;
+				box-shadow: 0 8px 40px rgba(0, 0, 0, 0.06);
+			}
+
+			.toolbar {
+				max-width: 800px;
+				margin: 0 auto 16px;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				gap: 12px;
+				font-size: 12px;
+				color: #666;
+			}
+			.toolbar a, .toolbar button {
+				display: inline-flex;
+				align-items: center;
+				gap: 6px;
+				font-family: inherit;
+				font-size: 12px;
+				padding: 8px 14px;
+				border: 1px solid #ccc;
+				border-radius: 999px;
+				background: #fff;
+				color: #111;
+				cursor: pointer;
+				text-decoration: none;
+				transition: background 0.15s ease;
+			}
+			.toolbar a:hover, .toolbar button:hover { background: #f4f4f2; }
+
+			header.cv-head {
+				border-bottom: 2px solid #111;
+				padding-bottom: 18px;
+				margin-bottom: 24px;
+			}
+			h1 {
+				font-size: 26pt;
+				font-weight: 700;
+				letter-spacing: -0.01em;
+				margin: 0 0 4px;
+				color: #111;
+			}
+			.role {
+				font-size: 13pt;
+				color: #444;
+				margin: 0 0 14px;
+				font-weight: 500;
+			}
+			.contact-line {
+				font-size: 10.5pt;
+				color: #444;
+				margin: 0;
+			}
+			.contact-line a { color: #444; text-decoration: none; }
+			.contact-line a:hover { text-decoration: underline; }
+			.contact-line .sep { margin: 0 8px; color: #aaa; }
+
+			h2.section-title {
+				font-size: 11pt;
+				font-weight: 700;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				margin: 28px 0 12px;
+				padding-bottom: 4px;
+				border-bottom: 1px solid #ccc;
+				color: #111;
+			}
+
+			.summary { margin: 0 0 8px; font-size: 11pt; line-height: 1.55; }
+
+			.entry { margin-bottom: 16px; page-break-inside: avoid; }
+			.entry-head {
+				display: flex;
+				justify-content: space-between;
+				align-items: baseline;
+				gap: 12px;
+				flex-wrap: wrap;
+			}
+			.entry-title { font-size: 11.5pt; font-weight: 700; margin: 0; color: #111; }
+			.entry-date { font-size: 10pt; color: #666; white-space: nowrap; }
+			.entry-org { font-size: 10.5pt; color: #444; margin: 2px 0 6px; font-style: italic; }
+			.entry ul { margin: 4px 0 0; padding-left: 18px; }
+			.entry li { font-size: 10.5pt; line-height: 1.5; margin-bottom: 2px; }
+
+			.skill-group { margin-bottom: 8px; font-size: 10.5pt; }
+			.skill-group strong { display: inline-block; min-width: 160px; color: #111; }
+
+			.langs {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+				gap: 4px 24px;
+				font-size: 10.5pt;
+			}
+			.langs li strong { display: inline-block; min-width: 110px; }
+
+			.meta-line {
+				margin-top: 4px;
+				font-size: 10pt;
+				color: #666;
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+				gap: 6px 24px;
+			}
+			.meta-line strong { color: #111; }
+
+			@page { size: A4; margin: 14mm 16mm; }
+
+			@media print {
+				body { background: #fff; padding: 0; font-size: 10.5pt; }
+				.toolbar { display: none; }
+				.page { max-width: none; margin: 0; padding: 0; box-shadow: none; }
+				h1 { font-size: 22pt; }
+				.role { font-size: 12pt; }
+				h2.section-title { margin-top: 18px; }
+				.entry { margin-bottom: 12px; }
+				a { color: inherit; text-decoration: none; }
+			}
+		</style>
+
+		<script>
+			document.getElementById('printBtn')!.addEventListener('click', () => window.print());
+			if (new URLSearchParams(location.search).get('print') === '1') {
+				window.addEventListener('load', () => setTimeout(() => window.print(), 400));
+			}
+		</script>
+	</body>
+</html>
