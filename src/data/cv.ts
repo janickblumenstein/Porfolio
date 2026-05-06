@@ -275,7 +275,7 @@ export const languages: Language[] = [
 export const meta = {
 	drivingLicense: 'Kat. B, C1E',
 	availability: '100%',
-	availabilityShort: 'Verfügbar ab 01/2026 · 80%',
+	availabilityShort: '100% ab 01.09.2026',
 	noticePeriod: '3 Monate',
 	references: 'auf Wunsch',
 	interests: 'Technik & Heimwerken, Sport, ehrenamtliche Mitarbeit',
