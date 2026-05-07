@@ -64,8 +64,8 @@ export const experience: Experience[] = [
 		startDate: '03/2024',
 		endDate: 'heute',
 		current: true,
-		role: 'Projektleiter Digitalisierung',
-		organization: 'Müller Martini Gruppe',
+		role: 'IT Operations Project Manager',
+		organization: 'Müller Martini AG',
 		location: 'Zofingen',
 		bullets: [
 			'Einführung von Mitarbeiter- und Servicetechniker-Apps (Ferienplanung, Zeiterfassung, Reporting) via Power Apps',

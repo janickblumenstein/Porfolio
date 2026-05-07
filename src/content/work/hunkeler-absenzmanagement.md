@@ -1,7 +1,7 @@
 ---
 title: Absenzmanagement, automatisiert
 publishDate: 2024-11-10 00:00:00
-img: /assets/stock-3.jpg
+img: /assets/showcases/PZE.png
 img_alt: Workflow-Diagramm Absenzmeldung End-to-End
 description: |
   End-to-End-Automatisierung des Absenzprozesses — von der Erfassung über die App bis zur HR-System-Synchronisation, inklusive Audit-Trail.
