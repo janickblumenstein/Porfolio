@@ -1,7 +1,7 @@
 ---
 title: Digitales Anfrage- & KVP-Tool
 publishDate: 2024-08-20 00:00:00
-img: /assets/stock-2.jpg
+img: /assets/showcases/Ideenfabrik.png
 img_alt: SharePoint Dashboard mit KVP-Auswertungen
 description: |
   SharePoint-basierte Lösung für strukturierte Anfragen und KVP-Vorschläge — mit automatischer Triage, Reminder-Logik und Reporting-Dashboards.

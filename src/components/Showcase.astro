@@ -96,7 +96,7 @@ const { title, intro, scenes, aspectRatio = '4 / 3' } = Astro.props;
 										)}
 									</video>
 								) : (
-									<img src={scene.media} alt={scene.alt || scene.title} loading="lazy" decoding="async" />
+									<img src={scene.media} alt={scene.alt || scene.title} loading="lazy" decoding="async" data-smart-fit />
 								)
 							) : (
 								<div class="placeholder">
@@ -135,7 +135,7 @@ const { title, intro, scenes, aspectRatio = '4 / 3' } = Astro.props;
 										)}
 									</video>
 								) : (
-									<img src={scene.media} alt="" loading="lazy" decoding="async" />
+									<img src={scene.media} alt="" loading="lazy" decoding="async" data-smart-fit />
 								)
 							) : (
 								<div class="placeholder">
@@ -431,4 +431,22 @@ const { title, intro, scenes, aspectRatio = '4 / 3' } = Astro.props;
 	} else {
 		init();
 	}
+</script>
+
+<script>
+	const fit = (img) => {
+		const w = img.offsetWidth, h = img.offsetHeight;
+		if (!w || !h || !img.naturalWidth) return;
+		const imgRatio = img.naturalWidth / img.naturalHeight;
+		const boxRatio = w / h;
+		const diff = Math.abs(Math.log(imgRatio / boxRatio));
+		img.style.objectFit = diff > 0.35 ? 'contain' : 'cover';
+	};
+
+	document.querySelectorAll('.media img, .scene-media-inline img').forEach((img) => {
+		const apply = () => fit(img);
+		if (img.complete && img.naturalWidth) apply();
+		else img.addEventListener('load', apply, { once: true });
+		new ResizeObserver(apply).observe(img);
+	});
 </script>
