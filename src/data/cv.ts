@@ -61,17 +61,18 @@ export interface Experience {
 
 export const experience: Experience[] = [
 		{
-		startDate: '03/2024',
+		startDate: '03/2026',
 		endDate: 'heute',
 		current: true,
 		role: 'IT Operations Project Manager',
 		organization: 'Müller Martini AG',
 		location: 'Zofingen',
 		bullets: [
-			'Einführung von Mitarbeiter- und Servicetechniker-Apps (Ferienplanung, Zeiterfassung, Reporting) via Power Apps',
-			'Umsetzung digitaler Anfragetools und SharePoint-Auswertungen',
-			'Automatisierung von Prozessen (Absenzmeldungen, KVP)',
+			'Einführung dynamisches Request Center für offizielle Anfragen jeglicher Art, skalierbar und vollautomatisiert. Inklusive Freigaben, Versionsverwaltung und Ablage',
+			'Begleitung SAP BTP Prozesse zur Automatisierung von Pull- und Push-Requests mit Externen',
+			'Betreuung DAM und PIM – Portal mit Benutzerverwaltung und automatisiertem Reporting',
 			'Leitung mehrerer Digitalisierungsprojekte von Konzeption bis Rollout',
+
 		],
 	},
 	{
@@ -79,7 +80,7 @@ export const experience: Experience[] = [
 		endDate: '03/2026',
 		current: false,
 		role: 'Projektleiter Digitalisierung',
-		organization: 'Hunkeler AG Paper Processing',
+		organization: 'Müller Martini Wikon (ehemalig Hunkeler AG Paper Processing)',
 		location: 'Wikon',
 		bullets: [
 			'Einführung von Mitarbeiter- und Servicetechniker-Apps (Ferienplanung, Zeiterfassung, Reporting) via Power Apps',
