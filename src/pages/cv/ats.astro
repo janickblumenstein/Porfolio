@@ -17,10 +17,13 @@ import {
 	experience,
 	education,
 	skills,
-	sideProjects,
 	languages,
 	meta,
 } from '../../data/cv';
+import { cvPdfAts } from '../../lib/cvPdf';
+import { getSideProjects } from '../../lib/projects';
+
+const sideProjects = await getSideProjects();
 ---
 
 <!doctype html>
@@ -39,9 +42,12 @@ import {
 	<body>
 		<div class="toolbar" role="toolbar" aria-label="Aktionen">
 			<a href="/cv/">← gestaltete Fassung</a>
-			<button type="button" id="printBtn" aria-label="Lebenslauf drucken oder als PDF speichern">
-				Drucken / als PDF speichern
-			</button>
+			<span class="toolbar-actions">
+				{cvPdfAts.exists && <a href={cvPdfAts.href} download>PDF herunterladen</a>}
+				<button type="button" id="printBtn" aria-label="Lebenslauf drucken oder als PDF speichern">
+					Drucken
+				</button>
+			</span>
 		</div>
 
 		<article class="page" itemscope itemtype="https://schema.org/Person">
@@ -242,6 +248,11 @@ import {
 				gap: 12px;
 				font-size: 12px;
 				color: #666;
+			}
+			.toolbar-actions {
+				display: inline-flex;
+				gap: 8px;
+				flex-wrap: wrap;
 			}
 			.toolbar a,
 			.toolbar button {

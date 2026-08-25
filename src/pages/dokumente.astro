@@ -3,7 +3,8 @@ import ContactCTA from '../components/ContactCTA.astro';
 import Hero from '../components/Hero.astro';
 import Icon from '../components/Icon.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { contact, documents, type DocumentCategory } from '../data/cv';
+import { contact, documents, personal, type DocumentCategory } from '../data/cv';
+import { cvPdf } from '../lib/cvPdf';
 
 const order: DocumentCategory[] = ['Arbeitszeugnis', 'Diplom', 'Zertifikat'];
 const headings: Record<DocumentCategory, string> = {
@@ -34,10 +35,30 @@ const groups = order
 			/>
 
 			{
+				cvPdf.exists && (
+					<section class="group">
+						<h2>Lebenslauf</h2>
+						<ul class="docs">
+							<li class="doc">
+								<div class="doc-text">
+									<h3>Lebenslauf {personal.fullName}</h3>
+									<p>Vollständiger Werdegang inkl. Kompetenzen und eigener Projekte · PDF</p>
+								</div>
+								<a class="download" href={cvPdf.href} download>
+									PDF herunterladen
+									<Icon icon="arrow-right" size="1.2em" />
+								</a>
+							</li>
+						</ul>
+					</section>
+				)
+			}
+
+			{
 				groups.length === 0 ? (
 					<section class="empty">
 						<Icon icon="paper-plane-tilt" color="var(--accent-regular)" size="2.5rem" gradient />
-						<h2>Noch nichts öffentlich hinterlegt</h2>
+						<h2>Zeugnisse und Diplome auf Anfrage</h2>
 						<p>
 							Arbeitszeugnisse und Diplome gebe ich derzeit auf Anfrage weiter. Eine kurze
 							Nachricht genügt — ich schicke die Unterlagen als PDF zurück.

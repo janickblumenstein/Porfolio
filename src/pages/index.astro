@@ -14,7 +14,11 @@ import Skills from '../components/Skills.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 // Single source of truth
-import { personal, tagline, experience, meta, sideProjects } from '../data/cv';
+import { personal, tagline, experience, meta } from '../data/cv';
+import { getSideProjects } from '../lib/projects';
+
+// Private Projekte — kommen aus dem `sideProject`-Block der work-Markdown-Dateien
+const sideProjects = await getSideProjects();
 
 // Content Collection — most recent 4 work projects
 const projects = (await getCollection('work'))

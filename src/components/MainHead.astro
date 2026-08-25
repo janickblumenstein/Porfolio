@@ -20,12 +20,10 @@ const {
 
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="icon" href="/favicon.ico" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link
-	href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,700;1,400&family=Rubik:wght@500;600&display=swap"
-	rel="stylesheet"
-/>
+<!-- Schriften liegen unter public/fonts/ — kein Request an Google, siehe DOKUMENTATION.md -->
+<link rel="preload" as="font" type="font/woff2" href="/fonts/public-sans-400-latin.woff2" crossorigin />
+<link rel="preload" as="font" type="font/woff2" href="/fonts/rubik-500-latin.woff2" crossorigin />
+<link rel="stylesheet" href="/fonts/fonts.css" />
 <script is:inline>
 	// This code is inlined in the head to make dark mode instant & blocking.
 	const getThemePreference = () => {

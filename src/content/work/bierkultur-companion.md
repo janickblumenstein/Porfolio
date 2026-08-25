@@ -10,6 +10,33 @@ tags:
   - Firebase
   - Realtime
   - Privatprojekt
+
+# Macht den Eintrag zusätzlich zu einem Lebenslauf-Eintrag. Siehe DOKUMENTATION.md.
+sideProject:
+  name: Bierkultur — Companion-App für Gruppenreisen
+  period: '2026'
+  role: Konzeption & Entwicklung
+  order: 2
+  cvLine: >-
+    Bierkultur — Companion-App für Gruppenreisen (JavaScript ES-Module, Firebase
+    Realtime Database) mit Missionen, Bingo, Quiz- und Turniermodi,
+    Live-Punktesystem und Host-Steuerung.
+  bullets:
+    - Punktesystem über alle Spielmodi hinweg mit Live-Leaderboard
+    - Missionen und Challenges, die jede teilnehmende Person selbst ergänzen kann
+    - Bingo mit Peer-Bestätigung durch zwei weitere Mitspielende statt Vertrauensbasis
+    - >-
+      Quiz-, Duell- und Turniermodi (Reaktion, Schiffeversenken, TicTacToe) mit
+      Host-Steuerung
+    - Gruppen-Voting mit sechs Abstimmungsmodi für die gemeinsame Reiseplanung
+    - >-
+      Modularer Aufbau — jedes Spielmodul hängt sich über eine Listener-Registry
+      in den Kern ein
+  stack:
+    - JavaScript (ES Modules)
+    - Firebase Realtime Database
+    - HTML / CSS
+  repoUrl: https://github.com/janickblumenstein/bluffquiz
 ---
 
 ## Warum

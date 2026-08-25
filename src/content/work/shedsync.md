@@ -11,6 +11,40 @@ tags:
   - Firebase
   - Android
   - Privatprojekt
+
+# Macht den Eintrag zusätzlich zu einem Lebenslauf-Eintrag. Siehe DOKUMENTATION.md.
+sideProject:
+  name: ShedSync
+  period: seit 2026
+  role: Konzeption & Entwicklung
+  order: 1
+  cvLine: >-
+    ShedSync — Inventar- und Lagerverwaltungssystem (Next.js, React, TypeScript,
+    Firebase, Capacitor/Android) mit Lagerort-Hierarchie, Bestands- und
+    Verleihverwaltung, QR-/EAN-Scanner und Bluetooth-Etikettendruck.
+  bullets:
+    - Hierarchische Lagerortverwaltung mit QR-Etiketten je Ort und Gegenstand
+    - >-
+      Drei Bestandsmodi (Stückzahl, Füllstand-Ampel, ohne Bestand) inkl.
+      Mindestbestand und automatischer Nachbestell-Liste
+    - Verleih-Center mit Ausleih- und Rückgabestatus je Gegenstand
+    - Barcode-/QR-Scanner mit EAN-Suche und automatischem Befüllen der Stammdaten
+    - >-
+      Direktdruck auf Brother PT-P710BT über Bluetooth aus der Android-App, mit
+      Browser-Fallback
+    - >-
+      Mandantenfähig über Workspaces — dieselbe Codebasis für mehrere Haushalte
+      oder Werkstätten
+  stack:
+    - Next.js 16
+    - React 19
+    - TypeScript
+    - Tailwind CSS
+    - Firebase / Firestore
+    - Capacitor (Android)
+    - Vercel
+  liveUrl: https://shedsync.vercel.app
+  repoUrl: https://github.com/janickblumenstein/Inventory-Hub
 ---
 
 ## Warum

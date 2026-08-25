@@ -10,6 +10,34 @@ tags:
   - Firebase
   - Realtime
   - Privatprojekt
+
+# Macht den Eintrag zusätzlich zu einem Lebenslauf-Eintrag. Siehe DOKUMENTATION.md.
+sideProject:
+  name: Connect — Live-Event-App
+  period: '2026'
+  role: Konzeption & Entwicklung
+  order: 3
+  cvLine: >-
+    Connect — Echtzeit-Event-App für ~160 gleichzeitige Gäste (JavaScript,
+    Firebase Realtime Database) mit Beamer-Ansicht, tempoabhängiger Wertung und
+    einem auf Lasttests ausgelegten Datenmodell.
+  bullets:
+    - Echtzeit-Abstimmung von rund 160 Geräten gleichzeitig, per QR-Code ohne Installation
+    - >-
+      Datenmodell bewusst auf Last optimiert: Antwortstrom nur beim Host,
+      Teilnehmergeräte abonnieren einen minimalen Zustand
+    - >-
+      Tempoabhängige Punktevergabe plus Team-Durchschnittswertung, damit nicht nur
+      die Schnellsten belohnt werden
+    - Automatische Teamzuteilung, die die Gruppengrössen ausbalanciert
+    - >-
+      Eigenes Lasttest-Werkzeug, das bis zu 300 simulierte Gäste mit realistischen
+      Reaktionszeiten gegen die Datenbank fährt
+  stack:
+    - JavaScript (ES Modules)
+    - Firebase Realtime Database
+    - Node.js (Lasttest)
+  repoUrl: https://github.com/janickblumenstein/Connect
 ---
 
 ## Warum
