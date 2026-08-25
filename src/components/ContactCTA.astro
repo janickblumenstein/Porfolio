@@ -1,11 +1,12 @@
 ---
+import { contact } from '../data/cv';
 import CallToAction from './CallToAction.astro';
 import Icon from './Icon.astro';
 ---
 
 <aside>
 	<h2>Lass uns über Digitalisierung reden.</h2>
-	<CallToAction href="mailto:janick.blumenstein@gmail.com">
+	<CallToAction href={`mailto:${contact.email}`}>
 		Nachricht senden
 		<Icon icon="paper-plane-tilt" size="1.2em" />
 	</CallToAction>

@@ -1,10 +1,13 @@
 ---
 // =============================================================================
-//  ATS-friendly CV page
+//  Lebenslauf — gestaltete Fassung "für Menschen"
 //  ---------------------------------------------------------------------------
-//  Rendered from src/data/cv.ts — single source of truth.
-//  Bypasses BaseLayout intentionally: clean black-on-white print, no gradients,
-//  no noise textures. Designed for Workday / SmartRecruiters / Personio parsing.
+//  Zweispaltig, mit Foto, Kompetenz-Skalen und Projektreferenzen. Rendert aus
+//  derselben Quelle wie die ATS-Fassung (src/data/cv.ts), damit beide nie
+//  auseinanderlaufen. Die maschinenlesbare Fassung liegt unter /cv/ats/.
+//
+//  Bewusst ohne BaseLayout: der Lebenslauf soll gedruckt sauber auf A4 landen,
+//  ohne Hintergrundverläufe und Rauschtexturen.
 // =============================================================================
 
 import {
@@ -15,9 +18,17 @@ import {
 	experience,
 	education,
 	skills,
+	skillLevelLabels,
+	sideProjects,
 	languages,
 	meta,
 } from '../data/cv';
+
+const usedLevels = [
+	...new Set(
+		skills.flatMap((group) => group.items.map((item) => item.level).filter(Boolean)),
+	),
+].sort() as (1 | 2 | 3 | 4 | 5)[];
 ---
 
 <!doctype html>
@@ -28,144 +39,247 @@ import {
 		<title>Lebenslauf — {personal.fullName}</title>
 		<meta
 			name="description"
-			content={`Lebenslauf ${personal.fullName} — ${personal.title}.`}
+			content={`Lebenslauf ${personal.fullName} — ${personal.title}. Werdegang, Kompetenzen und eigene Projekte.`}
 		/>
 		<meta name="robots" content="index, follow" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&family=Rubik:wght@500;600&display=swap"
+			rel="stylesheet"
+		/>
 	</head>
 	<body>
 		<div class="toolbar" role="toolbar" aria-label="Aktionen">
-			<a href="/">← zurück zur Übersicht</a>
-			<button type="button" id="printBtn" aria-label="Lebenslauf drucken oder als PDF speichern">
-				Drucken / als PDF speichern
-			</button>
+			<a href="/">← zur Website</a>
+			<div class="toolbar-actions">
+				<a href="/cv/ats/">Fassung für Bewerbungssysteme</a>
+				<button type="button" id="printBtn" aria-label="Lebenslauf drucken oder als PDF speichern">
+					Drucken / als PDF speichern
+				</button>
+			</div>
 		</div>
 
 		<article class="page" itemscope itemtype="https://schema.org/Person">
 			<header class="cv-head">
-				<h1 itemprop="name">{personal.fullName}</h1>
-				<p class="role" itemprop="jobTitle">{personal.title}</p>
-				<p class="contact-line">
-					<span itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
-						<span itemprop="streetAddress">{addr.street}</span>,
-						<span itemprop="postalCode">{addr.zip}</span>
-						<span itemprop="addressLocality">{addr.city}</span>,
-						<span itemprop="addressRegion">{addr.region}</span>
-					</span>
-					<span class="sep">·</span>
-					<a href={`mailto:${contact.email}`} itemprop="email">{contact.email}</a>
-					<span class="sep">·</span>
-					<a href={`tel:${contact.phoneRaw}`} itemprop="telephone">{contact.phone}</a>
-					{contact.linkedin && (
-						<>
-							<span class="sep">·</span>
-							<a href={contact.linkedin} rel="noopener">LinkedIn</a>
-						</>
-					)}
-				</p>
+				<img
+					class="portrait"
+					src="/assets/portrait.jpg"
+					alt={`Portraitfoto von ${personal.fullName}`}
+					width="220"
+					height="264"
+				/>
+				<div class="identity">
+					<h1 itemprop="name">{personal.fullName}</h1>
+					<p class="role" itemprop="jobTitle">{personal.title}</p>
+					<ul class="contact-list">
+						<li>
+							<span
+								itemprop="address"
+								itemscope
+								itemtype="https://schema.org/PostalAddress"
+							>
+								<span itemprop="streetAddress">{addr.street}</span>,
+								<span itemprop="postalCode">{addr.zip}</span>
+								<span itemprop="addressLocality">{addr.city}</span>
+							</span>
+						</li>
+						<li><a href={`mailto:${contact.email}`} itemprop="email">{contact.email}</a></li>
+						<li><a href={`tel:${contact.phoneRaw}`} itemprop="telephone">{contact.phone}</a></li>
+						<li>
+							<a class="accent" href={contact.website} itemprop="url" rel="noopener">
+								{contact.websiteLabel}
+							</a>
+						</li>
+						{contact.linkedin && (
+							<li><a href={contact.linkedin} itemprop="sameAs" rel="noopener">LinkedIn</a></li>
+						)}
+						{contact.github && (
+							<li><a href={contact.github} itemprop="sameAs" rel="noopener">GitHub</a></li>
+						)}
+					</ul>
+				</div>
 			</header>
 
-			<section>
-				<h2 class="section-title">Profil</h2>
-				<p class="summary">{profile}</p>
-			</section>
+			<p class="summary">{profile}</p>
 
-			<section>
-				<h2 class="section-title">Beruflicher Werdegang</h2>
-				{
-					experience.map((exp) => (
-						<div class="entry">
-							<div class="entry-head">
-								<h3 class="entry-title">{exp.role}</h3>
-								<span class="entry-date">
-									{exp.startDate}
-									{exp.endDate && ` – ${exp.endDate}`}
-								</span>
-							</div>
-							<p class="entry-org">
-								{exp.organization}
-								{exp.location && `, ${exp.location}`}
-							</p>
-							{exp.bullets && exp.bullets.length > 0 && (
-								<ul>
-									{exp.bullets.map((b) => (
-										<li>{b}</li>
-									))}
-								</ul>
-							)}
-						</div>
-					))
-				}
-			</section>
+			<div class="cols">
+				<main class="main">
+					<section>
+						<h2 class="section-title">Beruflicher Werdegang</h2>
+						{
+							experience.map((exp) => (
+								<div class="entry">
+									<span class="entry-date">
+										{exp.startDate}
+										{exp.endDate && ` – ${exp.endDate}`}
+									</span>
+									<h3 class="entry-title">{exp.role}</h3>
+									<p class="entry-org">
+										{[exp.organization, exp.location].filter(Boolean).join(', ')}
+									</p>
+									{exp.bullets && exp.bullets.length > 0 && (
+										<ul class="bullets">
+											{exp.bullets.map((b) => (
+												<li>{b}</li>
+											))}
+										</ul>
+									)}
+								</div>
+							))
+						}
+					</section>
 
-			<section>
-				<h2 class="section-title">Aus- und Weiterbildung</h2>
-				{
-					education.map((edu) => (
-						<div class="entry">
-							<div class="entry-head">
-								<h3 class="entry-title">{edu.title}</h3>
-								<span class="entry-date">
-									{edu.startDate}
-									{edu.endDate && ` – ${edu.endDate}`}
-								</span>
-							</div>
-							<p class="entry-org">{edu.organization}</p>
-							{edu.bullets && edu.bullets.length > 0 && (
-								<ul>
-									{edu.bullets.map((b) => (
-										<li>{b}</li>
-									))}
-								</ul>
-							)}
-						</div>
-					))
-				}
-			</section>
+					<section>
+						<h2 class="section-title">Eigene Projekte</h2>
+						<p class="section-intro">
+							Anwendungen, die ich ausserhalb des Arbeitsverhältnisses gebaut habe — und die
+							tatsächlich täglich im Einsatz sind.
+						</p>
+						{
+							sideProjects.map((project) => (
+								<div class="entry project">
+									<span class="entry-date">{project.period}</span>
+									<h3 class="entry-title">{project.name}</h3>
+									<p class="entry-org">{project.role}</p>
+									<p class="project-summary">{project.summary}</p>
+									<ul class="bullets">
+										{project.bullets.slice(0, 3).map((b) => (
+											<li>{b}</li>
+										))}
+									</ul>
+									<p class="stack-line">
+										{project.stack.join(' · ')}
+									</p>
+									<p class="project-links">
+										{project.liveUrl && (
+											<a href={project.liveUrl} rel="noopener">{project.liveUrl.replace('https://', '')}</a>
+										)}
+										<a href={`${contact.website}/work/${project.slug}/`} rel="noopener">
+											Details auf {contact.websiteLabel}
+										</a>
+									</p>
+								</div>
+							))
+						}
+					</section>
 
-			<section>
-				<h2 class="section-title">Kernkompetenzen</h2>
-				{
-					skills.map((group) => (
-						<div class="skill-group">
-							<strong>{group.title}:</strong>{' '}
-							{group.items.map((item) => item.name).join(', ')}
-						</div>
-					))
-				}
-			</section>
+					<section>
+						<h2 class="section-title">Aus- und Weiterbildung</h2>
+						{
+							education.map((edu) => (
+								<div class="entry">
+									<span class="entry-date">
+										{edu.startDate}
+										{edu.endDate && ` – ${edu.endDate}`}
+									</span>
+									<h3 class="entry-title">{edu.title}</h3>
+									<p class="entry-org">{edu.organization}</p>
+									{edu.bullets && edu.bullets.length > 0 && (
+										<ul class="bullets">
+											{edu.bullets.map((b) => (
+												<li>{b}</li>
+											))}
+										</ul>
+									)}
+								</div>
+							))
+						}
+					</section>
+				</main>
 
-			<section>
-				<h2 class="section-title">Sprachen</h2>
-				<ul class="langs">
-					{
-						languages.map((lang) => (
-							<li>
-								<strong>{lang.language}</strong> {lang.level}
-							</li>
-						))
-					}
-				</ul>
-			</section>
+				<aside class="side">
+					<section>
+						<h2 class="section-title">Kompetenzen</h2>
+						{
+							skills.map((group) => (
+								<div class="skill-group">
+									<h3 class="skill-group-title">{group.title}</h3>
+									<ul class="skill-list">
+										{group.items.map((item) => (
+											<li class="skill">
+												<span class="skill-name">{item.name}</span>
+												{item.level && (
+													<span
+														class="meter"
+														role="img"
+														aria-label={`${skillLevelLabels[item.level]} (${item.level} von 5)`}
+													>
+														{[1, 2, 3, 4, 5].map((step) => (
+															<span
+																class:list={['dot', { on: step <= item.level! }]}
+															/>
+														))}
+													</span>
+												)}
+											</li>
+										))}
+									</ul>
+								</div>
+							))
+						}
+						<p class="legend">
+							{usedLevels.map((level) => `${level} = ${skillLevelLabels[level]}`).join(' · ')}
+						</p>
+					</section>
 
-			<section>
-				<h2 class="section-title">Weitere Angaben</h2>
-				<div class="meta-line">
-					<div><strong>Geburtsdatum:</strong> {personal.birthDate}</div>
-					<div><strong>Familie:</strong> {personal.family}</div>
-					<div><strong>Nationalität:</strong> {personal.nationality}</div>
-					<div><strong>Führerschein:</strong> {meta.drivingLicense}</div>
-					<div><strong>Anstellungspensum:</strong> {meta.availability}</div>
-					<div><strong>Kündigungsfrist:</strong> {meta.noticePeriod}</div>
-					<div><strong>Referenzen:</strong> {meta.references}</div>
-					<div><strong>Interessen:</strong> {meta.interests}</div>
-				</div>
-			</section>
+					<section>
+						<h2 class="section-title">Sprachen</h2>
+						<ul class="skill-list">
+							{
+								languages.map((lang) => (
+									<li class="skill">
+										<span class="skill-name">
+											<strong>{lang.language}</strong>
+											<span class="lang-level">{lang.level}</span>
+										</span>
+										<span class="meter" role="img" aria-label={`${lang.dots} von 5`}>
+											{[1, 2, 3, 4, 5].map((step) => (
+												<span class:list={['dot', { on: step <= lang.dots }]} />
+											))}
+										</span>
+									</li>
+								))
+							}
+						</ul>
+					</section>
+
+					<section>
+						<h2 class="section-title">Persönlich</h2>
+						<dl class="facts">
+							<dt>Geburtsdatum</dt><dd>{personal.birthDate}</dd>
+							<dt>Familie</dt><dd>{personal.family}</dd>
+							<dt>Nationalität</dt><dd>{personal.nationality}</dd>
+							<dt>Führerschein</dt><dd>{meta.drivingLicense}</dd>
+							<dt>Pensum</dt><dd>{meta.availability}</dd>
+							<dt>Kündigungsfrist</dt><dd>{meta.noticePeriod}</dd>
+							<dt>Interessen</dt><dd>{meta.interests}</dd>
+						</dl>
+					</section>
+
+					<section class="docs-note">
+						<h2 class="section-title">Unterlagen</h2>
+						<p>
+							Arbeitszeugnisse, Diplome und Zertifikate sind unter
+							<a href="/dokumente/">{contact.websiteLabel}/dokumente</a> hinterlegt.
+							Referenzen gebe ich gerne auf Anfrage bekannt.
+						</p>
+					</section>
+				</aside>
+			</div>
 		</article>
 
 		<style is:global>
 			:root {
 				color-scheme: light;
+				--ink: #14161d;
+				--ink-soft: #4a5164;
+				--ink-faint: #7b8296;
+				--rule: #dcdfe8;
+				--accent: #6d13a0;
+				--accent-soft: #f3ebfa;
+				--paper: #ffffff;
 			}
 			*,
 			*::before,
@@ -177,32 +291,39 @@ import {
 			}
 			body {
 				margin: 0;
-				font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Helvetica,
+				font-family: 'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica,
 					Arial, sans-serif;
-				font-size: 11pt;
+				font-size: 10.5pt;
 				line-height: 1.5;
-				color: #111;
-				background: #f4f4f2;
+				color: var(--ink);
+				background: #eceef3;
 				padding: 32px 16px;
 			}
 
 			.page {
-				max-width: 800px;
+				max-width: 860px;
 				margin: 0 auto;
-				background: #fff;
-				padding: 56px 64px;
-				box-shadow: 0 8px 40px rgba(0, 0, 0, 0.06);
+				background: var(--paper);
+				padding: 48px 52px 56px;
+				box-shadow: 0 8px 40px rgba(9, 11, 17, 0.08);
 			}
 
+			/* ---------- Toolbar ---------- */
+
 			.toolbar {
-				max-width: 800px;
+				max-width: 860px;
 				margin: 0 auto 16px;
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
 				gap: 12px;
+				flex-wrap: wrap;
 				font-size: 12px;
-				color: #666;
+			}
+			.toolbar-actions {
+				display: flex;
+				gap: 8px;
+				flex-wrap: wrap;
 			}
 			.toolbar a,
 			.toolbar button {
@@ -212,153 +333,334 @@ import {
 				font-family: inherit;
 				font-size: 12px;
 				padding: 8px 14px;
-				border: 1px solid #ccc;
+				border: 1px solid #c9cddb;
 				border-radius: 999px;
 				background: #fff;
-				color: #111;
+				color: var(--ink);
 				cursor: pointer;
 				text-decoration: none;
 				transition: background 0.15s ease;
 			}
 			.toolbar a:hover,
 			.toolbar button:hover {
-				background: #f4f4f2;
+				background: var(--accent-soft);
 			}
 
-			header.cv-head {
-				border-bottom: 2px solid #111;
-				padding-bottom: 18px;
-				margin-bottom: 24px;
+			/* ---------- Kopf ---------- */
+
+			.cv-head {
+				display: flex;
+				align-items: center;
+				gap: 28px;
+				padding-bottom: 22px;
+				border-bottom: 3px solid var(--accent);
+			}
+			.portrait {
+				width: 110px;
+				height: 132px;
+				object-fit: cover;
+				object-position: top center;
+				border-radius: 8px;
+				flex-shrink: 0;
+			}
+			.identity {
+				min-width: 0;
 			}
 			h1 {
-				font-size: 26pt;
-				font-weight: 700;
-				letter-spacing: -0.01em;
+				font-family: Rubik, var(--font-system, sans-serif);
+				font-size: 25pt;
+				font-weight: 600;
+				letter-spacing: -0.015em;
+				line-height: 1.1;
 				margin: 0 0 4px;
-				color: #111;
 			}
 			.role {
-				font-size: 13pt;
-				color: #444;
-				margin: 0 0 14px;
-				font-weight: 500;
+				font-size: 12pt;
+				color: var(--accent);
+				font-weight: 600;
+				margin: 0 0 10px;
 			}
-			.contact-line {
-				font-size: 10.5pt;
-				color: #444;
+			.contact-list {
+				list-style: none;
+				display: flex;
+				flex-wrap: wrap;
+				gap: 4px 14px;
 				margin: 0;
+				padding: 0;
+				font-size: 9.5pt;
+				color: var(--ink-soft);
 			}
-			.contact-line a {
-				color: #444;
+			.contact-list li + li {
+				position: relative;
+				padding-left: 14px;
+			}
+			.contact-list li + li::before {
+				content: '';
+				position: absolute;
+				left: 0;
+				top: 50%;
+				width: 3px;
+				height: 3px;
+				border-radius: 50%;
+				background: var(--ink-faint);
+				transform: translateY(-50%);
+			}
+			.contact-list a {
+				color: inherit;
 				text-decoration: none;
 			}
-			.contact-line a:hover {
+			.contact-list a:hover {
 				text-decoration: underline;
 			}
-			.contact-line .sep {
-				margin: 0 8px;
-				color: #aaa;
-			}
-
-			h2.section-title {
-				font-size: 11pt;
-				font-weight: 700;
-				letter-spacing: 0.08em;
-				text-transform: uppercase;
-				margin: 28px 0 12px;
-				padding-bottom: 4px;
-				border-bottom: 1px solid #ccc;
-				color: #111;
+			.contact-list a.accent {
+				color: var(--accent);
+				font-weight: 600;
 			}
 
 			.summary {
-				margin: 0 0 8px;
-				font-size: 11pt;
-				line-height: 1.55;
+				margin: 20px 0 0;
+				font-size: 10.5pt;
+				line-height: 1.6;
+				color: var(--ink-soft);
 			}
+
+			/* ---------- Spalten ---------- */
+
+			.cols {
+				display: grid;
+				grid-template-columns: 1.75fr 1fr;
+				gap: 40px;
+				margin-top: 26px;
+			}
+			.main section + section,
+			.side section + section {
+				margin-top: 26px;
+			}
+
+			h2.section-title {
+				font-family: Rubik, sans-serif;
+				font-size: 9.5pt;
+				font-weight: 600;
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+				color: var(--accent);
+				margin: 0 0 14px;
+				padding-bottom: 5px;
+				border-bottom: 1px solid var(--rule);
+			}
+
+			.section-intro {
+				margin: -6px 0 14px;
+				font-size: 9.5pt;
+				color: var(--ink-faint);
+			}
+
+			/* ---------- Einträge ---------- */
 
 			.entry {
+				position: relative;
 				margin-bottom: 16px;
+				padding-left: 16px;
 				page-break-inside: avoid;
+				break-inside: avoid;
 			}
-			.entry-head {
-				display: flex;
-				justify-content: space-between;
-				align-items: baseline;
-				gap: 12px;
-				flex-wrap: wrap;
+			.entry::before {
+				content: '';
+				position: absolute;
+				left: 0;
+				top: 6px;
+				bottom: 2px;
+				width: 2px;
+				border-radius: 2px;
+				background: var(--rule);
 			}
-			.entry-title {
-				font-size: 11.5pt;
-				font-weight: 700;
-				margin: 0;
-				color: #111;
+			.entry:hover::before {
+				background: var(--accent);
 			}
 			.entry-date {
-				font-size: 10pt;
-				color: #666;
-				white-space: nowrap;
+				display: block;
+				font-size: 8.5pt;
+				font-weight: 600;
+				letter-spacing: 0.04em;
+				text-transform: uppercase;
+				color: var(--ink-faint);
+			}
+			.entry-title {
+				font-family: Rubik, sans-serif;
+				font-size: 11.5pt;
+				font-weight: 600;
+				margin: 2px 0 0;
 			}
 			.entry-org {
-				font-size: 10.5pt;
-				color: #444;
-				margin: 2px 0 6px;
-				font-style: italic;
+				font-size: 9.5pt;
+				color: var(--ink-soft);
+				margin: 1px 0 5px;
 			}
-			.entry ul {
+			.bullets {
 				margin: 4px 0 0;
-				padding-left: 18px;
+				padding-left: 15px;
 			}
-			.entry li {
-				font-size: 10.5pt;
+			.bullets li {
+				font-size: 9.5pt;
 				line-height: 1.5;
-				margin-bottom: 2px;
+				margin-bottom: 3px;
+				color: var(--ink-soft);
+			}
+			.bullets li::marker {
+				color: var(--accent);
 			}
 
-			.skill-group {
-				margin-bottom: 8px;
-				font-size: 10.5pt;
+			.project-summary {
+				font-size: 9.5pt;
+				line-height: 1.5;
+				margin: 0 0 4px;
 			}
-			.skill-group strong {
-				color: #111;
+			.stack-line {
+				margin: 6px 0 0;
+				font-size: 8.5pt;
+				letter-spacing: 0.02em;
+				color: var(--ink-faint);
+			}
+			.project-links {
+				margin: 4px 0 0;
+				display: flex;
+				flex-wrap: wrap;
+				gap: 4px 14px;
+				font-size: 8.5pt;
+			}
+			.project-links a {
+				color: var(--accent);
+				text-decoration: none;
+				font-weight: 600;
+			}
+			.project-links a:hover {
+				text-decoration: underline;
 			}
 
-			.langs {
+			/* ---------- Kompetenz-Skalen ---------- */
+
+			.skill-group + .skill-group {
+				margin-top: 14px;
+			}
+			.skill-group-title {
+				font-size: 9pt;
+				font-weight: 700;
+				margin: 0 0 6px;
+			}
+			.skill-list {
 				list-style: none;
+				margin: 0;
 				padding: 0;
+			}
+			.skill {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				gap: 10px;
+				padding: 2px 0;
+				font-size: 9pt;
+				color: var(--ink-soft);
+			}
+			.skill-name {
+				min-width: 0;
+			}
+			.lang-level {
+				display: block;
+				font-size: 8pt;
+				color: var(--ink-faint);
+			}
+			.meter {
+				display: inline-flex;
+				gap: 3px;
+				flex-shrink: 0;
+			}
+			.dot {
+				width: 7px;
+				height: 7px;
+				border-radius: 50%;
+				background: var(--rule);
+			}
+			.dot.on {
+				background: var(--accent);
+			}
+			.legend {
+				margin: 14px 0 0;
+				font-size: 7.5pt;
+				line-height: 1.5;
+				color: var(--ink-faint);
+			}
+
+			/* ---------- Fakten ---------- */
+
+			.facts {
 				margin: 0;
 				display: grid;
-				grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-				gap: 4px 24px;
-				font-size: 10.5pt;
+				grid-template-columns: auto 1fr;
+				gap: 3px 10px;
+				font-size: 9pt;
 			}
-			.langs li strong {
-				display: inline-block;
-				min-width: 110px;
+			.facts dt {
+				color: var(--ink-faint);
+			}
+			.facts dd {
+				margin: 0;
+				color: var(--ink-soft);
 			}
 
-			.meta-line {
-				margin-top: 4px;
-				font-size: 10pt;
-				color: #666;
-				display: grid;
-				grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-				gap: 6px 24px;
+			.docs-note p {
+				margin: 0;
+				font-size: 9pt;
+				color: var(--ink-soft);
 			}
-			.meta-line strong {
-				color: #111;
+			.docs-note a {
+				color: var(--accent);
+				font-weight: 600;
+				text-decoration: none;
 			}
+			.docs-note a:hover {
+				text-decoration: underline;
+			}
+
+			/* ---------- Schmale Bildschirme ---------- */
+
+			@media (max-width: 46em) {
+				body {
+					padding: 16px 10px;
+				}
+				.page {
+					padding: 28px 22px 32px;
+				}
+				.cv-head {
+					flex-direction: column;
+					align-items: flex-start;
+					gap: 16px;
+				}
+				.cols {
+					grid-template-columns: 1fr;
+					gap: 26px;
+				}
+				h1 {
+					font-size: 21pt;
+				}
+			}
+
+			/* ---------- Druck ---------- */
 
 			@page {
 				size: A4;
-				margin: 14mm 16mm;
+				margin: 12mm 13mm;
 			}
 
 			@media print {
+				:root {
+					--rule: #d5d8e0;
+				}
 				body {
 					background: #fff;
 					padding: 0;
-					font-size: 10.5pt;
+					font-size: 9.5pt;
+					-webkit-print-color-adjust: exact;
+					print-color-adjust: exact;
 				}
 				.toolbar {
 					display: none;
@@ -369,21 +671,33 @@ import {
 					padding: 0;
 					box-shadow: none;
 				}
-				h1 {
-					font-size: 22pt;
+				.cols {
+					grid-template-columns: 1.75fr 1fr;
+					gap: 26px;
 				}
-				.role {
-					font-size: 12pt;
+				h1 {
+					font-size: 21pt;
+				}
+				.portrait {
+					width: 92px;
+					height: 110px;
+				}
+				.skill-group,
+				.facts,
+				.docs-note {
+					break-inside: avoid;
 				}
 				h2.section-title {
-					margin-top: 18px;
-				}
-				.entry {
-					margin-bottom: 12px;
+					break-after: avoid;
 				}
 				a {
 					color: inherit;
 					text-decoration: none;
+				}
+				.project-links a,
+				.docs-note a,
+				.contact-list a.accent {
+					color: var(--accent);
 				}
 			}
 		</style>

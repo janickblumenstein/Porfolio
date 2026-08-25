@@ -14,7 +14,7 @@ import Skills from '../components/Skills.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 // Single source of truth
-import { personal, tagline, experience, meta } from '../data/cv';
+import { personal, tagline, experience, meta, sideProjects } from '../data/cv';
 
 // Content Collection — most recent 4 work projects
 const projects = (await getCollection('work'))
@@ -134,13 +134,51 @@ const showcaseScenes = [
 				</div>
 			</section>
 
-			{/* ─────────  STATIONEN  ───────── */}
+			{/* ─────────  EIGENE PROJEKTE  ───────── */}
 			<section class="section with-background bg-variant">
+				<header class="section-header stack gap-2 lg:gap-4">
+					<h3>Aus eigenem Antrieb</h3>
+					<p>
+						Was ich baue, wenn niemand ein Pflichtenheft schreibt: Anwendungen für den eigenen
+						Alltag — die tatsächlich täglich genutzt werden.
+					</p>
+				</header>
+
+				<div class="gallery">
+					<ul class="side-projects">
+						{
+							sideProjects.map((project) => (
+								<li>
+									<a class="side-card" href={`/work/${project.slug}/`}>
+										<div class="side-card-head">
+											<h4>{project.name}</h4>
+											<span class="side-card-period">{project.period}</span>
+										</div>
+										<p>{project.summary}</p>
+										<ul class="stack-tags">
+											{project.stack.slice(0, 4).map((tech) => (
+												<li>{tech}</li>
+											))}
+										</ul>
+										<span class="side-card-more">
+											Mehr dazu
+											<Icon icon="arrow-right" size="1em" />
+										</span>
+									</a>
+								</li>
+							))
+						}
+					</ul>
+				</div>
+			</section>
+
+			{/* ─────────  STATIONEN  ───────── */}
+			<section class="section with-background">
 				<header class="section-header stack gap-2 lg:gap-4">
 					<h3>Stationen</h3>
 					<p>
-						Mein Weg führte vom Konstrukteur über den strategischen Einkauf bis zum heutigen
-						Projektleiter Digitalisierung.
+						Mein Weg führte vom Konstrukteur über den strategischen Einkauf bis zur heutigen
+						Projektleitung in IT und Operations.
 					</p>
 				</header>
 
@@ -319,6 +357,100 @@ const showcaseScenes = [
 
 		.cta {
 			grid-area: cta;
+		}
+	}
+
+	/* ====================================================== */
+
+	.side-projects {
+		display: grid;
+		gap: 1.5rem;
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	.side-card {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		height: 100%;
+		padding: 1.5rem;
+		border: 1px solid var(--gray-800);
+		border-radius: 1.5rem;
+		background: var(--gradient-subtle);
+		box-shadow: var(--shadow-sm);
+		color: var(--gray-300);
+		text-decoration: none;
+		transition:
+			box-shadow var(--theme-transition),
+			border-color var(--theme-transition);
+	}
+
+	.side-card:hover,
+	.side-card:focus-visible {
+		box-shadow: var(--shadow-md);
+		border-color: var(--accent-regular);
+	}
+
+	.side-card-head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 0.5rem;
+	}
+
+	.side-card h4 {
+		font-size: var(--text-lg);
+		font-family: var(--font-brand);
+		font-weight: 500;
+		color: var(--gray-0);
+		margin: 0;
+	}
+
+	.side-card-period {
+		font-size: var(--text-sm);
+		color: var(--gray-400);
+		white-space: nowrap;
+	}
+
+	.side-card p {
+		margin: 0;
+		flex-grow: 1;
+	}
+
+	.stack-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.375rem;
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	.stack-tags li {
+		font-size: var(--text-sm);
+		line-height: 1.3;
+		padding: 0.25rem 0.625rem;
+		border: 1px solid var(--gray-800);
+		border-radius: 999rem;
+		color: var(--gray-400);
+	}
+
+	.side-card-more {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.375rem;
+		font-size: var(--text-sm);
+		font-weight: 500;
+		color: var(--link-color);
+	}
+
+	@media (min-width: 50em) {
+		.side-projects {
+			grid-template-columns: repeat(3, 1fr);
+			gap: 2rem;
 		}
 	}
 

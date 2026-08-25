@@ -1,0 +1,206 @@
+---
+import ContactCTA from '../components/ContactCTA.astro';
+import Hero from '../components/Hero.astro';
+import Icon from '../components/Icon.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { contact, documents, type DocumentCategory } from '../data/cv';
+
+const order: DocumentCategory[] = ['Arbeitszeugnis', 'Diplom', 'Zertifikat'];
+const headings: Record<DocumentCategory, string> = {
+	Arbeitszeugnis: 'Arbeitszeugnisse',
+	Diplom: 'Diplome',
+	Zertifikat: 'Zertifikate',
+};
+
+const groups = order
+	.map((category) => ({
+		category,
+		heading: headings[category],
+		entries: documents.filter((doc) => doc.category === category),
+	}))
+	.filter((group) => group.entries.length > 0);
+---
+
+<BaseLayout
+	title="Unterlagen | Janick Blumenstein"
+	description="Arbeitszeugnisse, Diplome und Zertifikate von Janick Blumenstein — gebündelt an einem Ort."
+>
+	<div class="stack gap-20">
+		<main class="wrapper stack gap-8">
+			<Hero
+				title="Unterlagen"
+				tagline="Arbeitszeugnisse, Diplome und Zertifikate an einem Ort — damit sie nicht als Anhang in einem Mailverlauf verschwinden."
+				align="start"
+			/>
+
+			{
+				groups.length === 0 ? (
+					<section class="empty">
+						<Icon icon="paper-plane-tilt" color="var(--accent-regular)" size="2.5rem" gradient />
+						<h2>Noch nichts öffentlich hinterlegt</h2>
+						<p>
+							Arbeitszeugnisse und Diplome gebe ich derzeit auf Anfrage weiter. Eine kurze
+							Nachricht genügt — ich schicke die Unterlagen als PDF zurück.
+						</p>
+						<a class="mail" href={`mailto:${contact.email}`}>
+							{contact.email}
+							<Icon icon="arrow-right" size="1.2em" />
+						</a>
+					</section>
+				) : (
+					groups.map((group) => (
+						<section class="group">
+							<h2>{group.heading}</h2>
+							<ul class="docs">
+								{group.entries.map((doc) => (
+									<li class="doc">
+										<div class="doc-text">
+											<h3>{doc.title}</h3>
+											<p>
+												{doc.issuer} · {doc.date}
+											</p>
+										</div>
+										{doc.file ? (
+											<a class="download" href={doc.file} target="_blank" rel="noopener">
+												PDF öffnen
+												<Icon icon="arrow-right" size="1.2em" />
+											</a>
+										) : (
+											<span class="on-request">auf Anfrage</span>
+										)}
+									</li>
+								))}
+							</ul>
+						</section>
+					))
+				)
+			}
+
+			<p class="note">
+				Referenzpersonen nenne ich gerne auf Anfrage. Den vollständigen Lebenslauf findest du
+				unter <a href="/cv/">Lebenslauf</a>.
+			</p>
+		</main>
+
+		<ContactCTA />
+	</div>
+</BaseLayout>
+
+<style>
+	.group {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.group h2 {
+		font-size: var(--text-xl);
+		color: var(--gray-0);
+	}
+
+	.docs {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	.doc {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 1.25rem 1.5rem;
+		border: 1px solid var(--gray-800);
+		border-radius: 0.75rem;
+		background: var(--gradient-subtle);
+		box-shadow: var(--shadow-sm);
+	}
+
+	.doc-text h3 {
+		font-size: var(--text-md);
+		color: var(--gray-0);
+		margin: 0;
+	}
+
+	.doc-text p {
+		margin: 0.25rem 0 0;
+		font-size: var(--text-sm);
+		color: var(--gray-400);
+	}
+
+	.download {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.5rem 1rem;
+		border-radius: 999rem;
+		border: 1px solid var(--accent-regular);
+		color: var(--accent-text-over);
+		background-color: var(--accent-regular);
+		font-size: var(--text-sm);
+		text-decoration: none;
+		white-space: nowrap;
+	}
+
+	.on-request {
+		font-size: var(--text-sm);
+		color: var(--gray-400);
+		font-style: italic;
+	}
+
+	.empty {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 1rem;
+		padding: 2.5rem;
+		border: 1px solid var(--gray-800);
+		border-radius: 1.5rem;
+		background-color: var(--gray-999_40);
+		box-shadow: var(--shadow-sm);
+	}
+
+	.empty h2 {
+		font-size: var(--text-xl);
+		color: var(--gray-0);
+		margin: 0;
+	}
+
+	.empty p {
+		margin: 0;
+		max-width: 52ch;
+		color: var(--gray-300);
+	}
+
+	.mail {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		color: var(--link-color);
+		font-weight: 500;
+		text-decoration: none;
+	}
+
+	.mail:hover {
+		text-decoration: underline;
+	}
+
+	.note {
+		font-size: var(--text-sm);
+		color: var(--gray-400);
+	}
+
+	.note a {
+		color: var(--link-color);
+	}
+
+	@media (min-width: 50em) {
+		.group h2 {
+			font-size: var(--text-2xl);
+		}
+	}
+</style>
