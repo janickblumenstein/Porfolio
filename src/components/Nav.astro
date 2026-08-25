@@ -1,4 +1,5 @@
 ---
+import { contact, personal } from '../data/cv';
 import Icon from './Icon.astro';
 import type { iconPaths } from './IconPaths';
 import ThemeToggle from './ThemeToggle.astro';
@@ -8,13 +9,14 @@ const textLinks: { label: string; href: string }[] = [
 	{ label: 'Start', href: '/' },
 	{ label: 'Projekte', href: '/work/' },
 	{ label: 'Über mich', href: '/about/' },
-	{ label: 'CV', href: '/cv/' },
+	{ label: 'Lebenslauf', href: '/cv/' },
 ];
 
 /** Icon links to social media — edit these with links to your profiles! */
 const iconLinks: { label: string; href: string; icon: keyof typeof iconPaths }[] = [
-	{ label: 'LinkedIn', href: 'https://www.linkedin.com/in/janick-blumenstein-b545a1133/', icon: 'linkedin-logo' },
-	{ label: 'E-Mail', href: 'mailto:janick.blumenstein@gmail.com', icon: 'paper-plane-tilt' },
+	{ label: 'LinkedIn', href: contact.linkedin, icon: 'linkedin-logo' },
+	{ label: 'GitHub', href: contact.github, icon: 'github-logo' },
+	{ label: 'E-Mail', href: `mailto:${contact.email}`, icon: 'paper-plane-tilt' },
 ];
 
 /** Test if a link is pointing to the current page. */
@@ -30,7 +32,7 @@ const isCurrentPage = (href: string) => {
 	<div class="menu-header">
 		<a href="/" class="site-title">
 			<Icon icon="terminal-window" color="var(--accent-regular)" size="1.6em" gradient />
-			Janick Blumenstein
+			{personal.fullName}
 		</a>
 		<menu-button>
 			<template>

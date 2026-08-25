@@ -13,7 +13,7 @@ export const personal = {
 	firstName: 'Janick',
 	lastName: 'Blumenstein',
 	fullName: 'Janick Blumenstein',
-	title: 'Wirtschaftsingenieur FH · Projektleiter Digitalisierung',
+	title: 'Wirtschaftsingenieur FH · IT Operations Project Manager',
 	birthDate: '12.07.1992',
 	family: 'verheiratet, 3 Kinder',
 	nationality: 'Schweiz',
@@ -31,8 +31,10 @@ export const contact = {
 	email: 'janick.blumenstein@gmail.com',
 	phone: '+41 78 888 29 73',
 	phoneRaw: '+41788882973',
-	linkedin: 'https://www.linkedin.com/in/janick-blumenstein/',
-	github: '', // leer lassen, falls nicht gewünscht
+	linkedin: 'https://www.linkedin.com/in/janick-blumenstein-b545a1133/',
+	github: 'https://github.com/janickblumenstein',
+	website: 'https://www.buildwithjanick.dev',
+	websiteLabel: 'buildwithjanick.dev',
 } as const;
 
 // -----------------------------------------------------------------------------
@@ -40,10 +42,10 @@ export const contact = {
 // -----------------------------------------------------------------------------
 
 export const tagline =
-	'Wirtschaftsingenieur FH und Projektleiter Digitalisierung aus Brittnau, AG. Ich verbinde Operations-Verständnis mit Microsoft Power Platform, um Prozesse messbar zu vereinfachen.';
+	'Wirtschaftsingenieur FH und IT Operations Project Manager aus Brittnau, AG. Ich verbinde Operations-Verständnis mit Microsoft Power Platform, um Prozesse messbar zu vereinfachen — und baue nebenbei eigene Apps von Grund auf.';
 
 export const profile =
-	'Wirtschaftsingenieur FH mit Vertiefung Operations Management und über zehn Jahren Berufserfahrung — vom Konstrukteur über den strategischen Einkauf bis zum heutigen Projektleiter Digitalisierung. Spezialisiert auf Microsoft Power Platform, Microsoft 365-Administration sowie die Konzeption, Automatisierung und Einführung digitaler Geschäftsprozesse. Erfahrung in Datenmodellierung, Reporting und Schnittstellenintegration. Verhandlungssicher in Deutsch und Englisch.';
+	'Wirtschaftsingenieur FH mit Vertiefung Operations Management und über zehn Jahren Berufserfahrung — vom Konstrukteur über den strategischen Einkauf bis zur heutigen Projektleitung in IT und Operations. Spezialisiert auf Microsoft Power Platform, Microsoft 365-Administration sowie die Konzeption, Automatisierung und Einführung digitaler Geschäftsprozesse. Ergänzend dazu entwickle ich in der Freizeit produktiv genutzte Web- und Android-Apps mit Next.js, React, TypeScript und Firebase — von der Datenmodellierung über die Hardware-Anbindung bis zum Deployment. Verhandlungssicher in Deutsch und Englisch.';
 
 // -----------------------------------------------------------------------------
 //  Berufserfahrung
@@ -234,13 +236,23 @@ export const skills: SkillGroup[] = [
 		],
 	},
 	{
+		title: 'Softwareentwicklung',
+		items: [
+			{ name: 'TypeScript / JavaScript', level: 3 },
+			{ name: 'React & Next.js', level: 3 },
+			{ name: 'Firebase (Firestore & Realtime DB)', level: 3 },
+			{ name: 'Git & GitHub', level: 3 },
+			{ name: 'Capacitor (Android-Builds)', level: 2 },
+		],
+	},
+	{
 		title: 'Methoden',
 		items: [
-			{ name: 'Prozessdigitalisierung' },
-			{ name: 'Low-Code-Entwicklung' },
-			{ name: 'Automatisierung' },
-			{ name: 'Lean / Operational Excellence' },
-			{ name: 'Projektmanagement' },
+			{ name: 'Prozessdigitalisierung', level: 5 },
+			{ name: 'Low-Code-Entwicklung', level: 4 },
+			{ name: 'Automatisierung', level: 4 },
+			{ name: 'Lean / Operational Excellence', level: 4 },
+			{ name: 'Projektmanagement', level: 4 },
 		],
 	},
 	{
@@ -249,6 +261,108 @@ export const skills: SkillGroup[] = [
 			{ name: 'Adobe Suite (InDesign, Illustrator, Photoshop)', level: 3 },
 			{ name: 'CAD (diverse Systeme)', level: 3 },
 		],
+	},
+];
+
+/** Beschriftung der Skill-Level 1–5 — Legende in der Human-Variante des CV. */
+export const skillLevelLabels: Record<1 | 2 | 3 | 4 | 5, string> = {
+	1: 'Grundkenntnisse',
+	2: 'Anwendungserfahrung',
+	3: 'Fortgeschritten',
+	4: 'Sehr gut',
+	5: 'Experte',
+};
+
+// -----------------------------------------------------------------------------
+//  Private Projekte
+//  ---------------------------------------------------------------------------
+//  Eigenentwicklungen ausserhalb des Arbeitsverhältnisses. Erscheinen im CV
+//  (beide Varianten), auf der Startseite und als Detailseiten unter /work/.
+//  `slug` verweist auf den passenden Eintrag in src/content/work/.
+// -----------------------------------------------------------------------------
+
+export interface SideProject {
+	name: string;
+	slug: string;
+	period: string;
+	role: string;
+	summary: string;
+	/** Kurzfassung für den ATS-CV — eine Zeile, keine Formatierung. */
+	cvLine: string;
+	bullets: string[];
+	stack: string[];
+	liveUrl?: string;
+	repoUrl?: string;
+}
+
+export const sideProjects: SideProject[] = [
+	{
+		name: 'ShedSync',
+		slug: 'shedsync',
+		period: 'seit 2026',
+		role: 'Konzeption & Entwicklung',
+		summary:
+			'Inventarsystem für Werkstatt, Haushalt und Vorratshaltung — vom Werkzeug bis zum Lebensmittel. Mit Lagerortverwaltung, Bestandsführung, Verleih, Nachbestellung und Etikettendruck per Bluetooth.',
+		cvLine:
+			'ShedSync — Inventar- und Lagerverwaltungssystem (Next.js, React, TypeScript, Firebase, Capacitor/Android) mit Lagerort-Hierarchie, Bestands- und Verleihverwaltung, QR-/EAN-Scanner und Bluetooth-Etikettendruck.',
+		bullets: [
+			'Hierarchische Lagerortverwaltung mit QR-Etiketten je Ort und Gegenstand',
+			'Drei Bestandsmodi (Stückzahl, Füllstand-Ampel, ohne Bestand) inkl. Mindestbestand und automatischer Nachbestell-Liste',
+			'Verleih-Center mit Ausleih- und Rückgabestatus je Gegenstand',
+			'Barcode-/QR-Scanner mit EAN-Suche und automatischem Befüllen der Stammdaten',
+			'Direktdruck auf Brother PT-P710BT über Bluetooth aus der Android-App, mit Browser-Fallback',
+			'Mandantenfähig über Workspaces — dieselbe Codebasis für mehrere Haushalte oder Werkstätten',
+		],
+		stack: [
+			'Next.js 16',
+			'React 19',
+			'TypeScript',
+			'Tailwind CSS',
+			'Firebase / Firestore',
+			'Capacitor (Android)',
+			'Vercel',
+		],
+		liveUrl: 'https://shedsync.vercel.app',
+		repoUrl: 'https://github.com/janickblumenstein/Inventory-Hub',
+	},
+	{
+		name: 'Bierkultur — Companion-App für Gruppenreisen',
+		slug: 'bierkultur-companion',
+		period: '2026',
+		role: 'Konzeption & Entwicklung',
+		summary:
+			'Web-App für ein Wochenende mit Freunden: Challenges, Bingo, Quizrunden, Turniere und ein gemeinsames Punktesystem — alles live auf allen Handys synchron.',
+		cvLine:
+			'Bierkultur — Companion-App für Gruppenreisen (JavaScript ES-Module, Firebase Realtime Database) mit Missionen, Bingo, Quiz- und Turniermodi, Live-Punktesystem und Host-Steuerung.',
+		bullets: [
+			'Punktesystem über alle Spielmodi hinweg mit Live-Leaderboard',
+			'Missionen und Challenges, die jede teilnehmende Person selbst ergänzen kann',
+			'Bingo mit Peer-Bestätigung durch zwei weitere Mitspielende statt Vertrauensbasis',
+			'Quiz-, Duell- und Turniermodi (Reaktion, Schiffeversenken, TicTacToe) mit Host-Steuerung',
+			'Gruppen-Voting mit sechs Abstimmungsmodi für die gemeinsame Reiseplanung',
+			'Modularer Aufbau — jedes Spielmodul hängt sich über eine Listener-Registry in den Kern ein',
+		],
+		stack: ['JavaScript (ES Modules)', 'Firebase Realtime Database', 'HTML / CSS'],
+		repoUrl: 'https://github.com/janickblumenstein/bluffquiz',
+	},
+	{
+		name: 'Connect — Live-Event-App',
+		slug: 'connect-live-event',
+		period: '2026',
+		role: 'Konzeption & Entwicklung',
+		summary:
+			'Mitmach-App für einen Event mit rund 160 Gästen: Beamer-Ansicht, Handy-Abstimmung in Echtzeit, faire Team- und Einzelwertung.',
+		cvLine:
+			'Connect — Echtzeit-Event-App für ~160 gleichzeitige Gäste (JavaScript, Firebase Realtime Database) mit Beamer-Ansicht, tempoabhängiger Wertung und einem auf Lasttests ausgelegten Datenmodell.',
+		bullets: [
+			'Echtzeit-Abstimmung von rund 160 Geräten gleichzeitig, per QR-Code ohne Installation',
+			'Datenmodell bewusst auf Last optimiert: Antwortstrom nur beim Host, Teilnehmergeräte abonnieren einen minimalen Zustand',
+			'Tempoabhängige Punktevergabe plus Team-Durchschnittswertung, damit nicht nur die Schnellsten belohnt werden',
+			'Automatische Teamzuteilung, die die Gruppengrössen ausbalanciert',
+			'Eigenes Lasttest-Werkzeug, das bis zu 300 simulierte Gäste mit realistischen Reaktionszeiten gegen die Datenbank fährt',
+		],
+		stack: ['JavaScript (ES Modules)', 'Firebase Realtime Database', 'Node.js (Lasttest)'],
+		repoUrl: 'https://github.com/janickblumenstein/Connect',
 	},
 ];
 
@@ -272,6 +386,32 @@ export const languages: Language[] = [
 // -----------------------------------------------------------------------------
 //  Zusätzliche Angaben (für CV "Weitere Angaben"-Sektion und Hero-Status)
 // -----------------------------------------------------------------------------
+
+// -----------------------------------------------------------------------------
+//  Dokumente (Arbeitszeugnisse, Diplome, Zertifikate)
+//  ---------------------------------------------------------------------------
+//  Neues Dokument aufschalten:
+//    1. PDF nach public/documents/ legen, z.B. public/documents/zeugnis-franke.pdf
+//    2. Hier einen Eintrag mit `file: '/documents/zeugnis-franke.pdf'` ergänzen
+//  Ohne `file` erscheint der Eintrag als "auf Anfrage" — nichts wird verlinkt.
+//  Solange die Liste leer ist, blendet sich die Dokumente-Seite selbst aus.
+// -----------------------------------------------------------------------------
+
+export type DocumentCategory = 'Arbeitszeugnis' | 'Diplom' | 'Zertifikat';
+
+export interface DocumentEntry {
+	title: string;
+	category: DocumentCategory;
+	issuer: string;
+	date: string;
+	/** Pfad unter /public. Fehlt er, gilt das Dokument als "auf Anfrage". */
+	file?: string;
+}
+
+export const documents: DocumentEntry[] = [];
+
+/** Steuert, ob /dokumente überhaupt verlinkt wird. */
+export const hasPublicDocuments = documents.some((doc) => doc.file);
 
 export const meta = {
 	drivingLicense: 'Kat. B, C1E',

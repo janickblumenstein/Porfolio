@@ -1,0 +1,451 @@
+---
+// =============================================================================
+//  ATS-Variante des Lebenslaufs — "für Maschinen"
+//  ---------------------------------------------------------------------------
+//  Rendert aus src/data/cv.ts. Bewusst ohne BaseLayout: reines Schwarz auf
+//  Weiss, keine Grafiken, keine Spalten, keine Icons. Jede Information steht
+//  als durchsuchbarer Text im Fluss, damit Parser wie Workday,
+//  SmartRecruiters oder Personio sie zuverlässig auslesen.
+//  Die gestaltete Fassung für menschliche Leser liegt unter /cv/.
+// =============================================================================
+
+import {
+	personal,
+	location as addr,
+	contact,
+	profile,
+	experience,
+	education,
+	skills,
+	sideProjects,
+	languages,
+	meta,
+} from '../../data/cv';
+---
+
+<!doctype html>
+<html lang="de">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Lebenslauf — {personal.fullName}</title>
+		<meta
+			name="description"
+			content={`Lebenslauf ${personal.fullName} — ${personal.title}.`}
+		/>
+		<meta name="robots" content="index, follow" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+	</head>
+	<body>
+		<div class="toolbar" role="toolbar" aria-label="Aktionen">
+			<a href="/cv/">← gestaltete Fassung</a>
+			<button type="button" id="printBtn" aria-label="Lebenslauf drucken oder als PDF speichern">
+				Drucken / als PDF speichern
+			</button>
+		</div>
+
+		<article class="page" itemscope itemtype="https://schema.org/Person">
+			<header class="cv-head">
+				<h1 itemprop="name">{personal.fullName}</h1>
+				<p class="role" itemprop="jobTitle">{personal.title}</p>
+				<p class="contact-line">
+					<span itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
+						<span itemprop="streetAddress">{addr.street}</span>,
+						<span itemprop="postalCode">{addr.zip}</span>
+						<span itemprop="addressLocality">{addr.city}</span>,
+						<span itemprop="addressRegion">{addr.region}</span>
+					</span>
+					<span class="sep">·</span>
+					<a href={`mailto:${contact.email}`} itemprop="email">{contact.email}</a>
+					<span class="sep">·</span>
+					<a href={`tel:${contact.phoneRaw}`} itemprop="telephone">{contact.phone}</a>
+				</p>
+				<p class="contact-line">
+					<a href={contact.website} itemprop="url" rel="noopener">{contact.websiteLabel}</a>
+					{contact.linkedin && (
+						<>
+							<span class="sep">·</span>
+							<a href={contact.linkedin} itemprop="sameAs" rel="noopener">{contact.linkedin}</a>
+						</>
+					)}
+					{contact.github && (
+						<>
+							<span class="sep">·</span>
+							<a href={contact.github} itemprop="sameAs" rel="noopener">{contact.github}</a>
+						</>
+					)}
+				</p>
+			</header>
+
+			<section>
+				<h2 class="section-title">Profil</h2>
+				<p class="summary">{profile}</p>
+			</section>
+
+			<section>
+				<h2 class="section-title">Beruflicher Werdegang</h2>
+				{
+					experience.map((exp) => (
+						<div class="entry">
+							<div class="entry-head">
+								<h3 class="entry-title">{exp.role}</h3>
+								<span class="entry-date">
+									{exp.startDate}
+									{exp.endDate && ` – ${exp.endDate}`}
+								</span>
+							</div>
+							<p class="entry-org">
+								{[exp.organization, exp.location].filter(Boolean).join(', ')}
+							</p>
+							{exp.bullets && exp.bullets.length > 0 && (
+								<ul>
+									{exp.bullets.map((b) => (
+										<li>{b}</li>
+									))}
+								</ul>
+							)}
+						</div>
+					))
+				}
+			</section>
+
+			<section>
+				<h2 class="section-title">Eigenentwicklungen und private Projekte</h2>
+				<p class="section-intro">
+					Ausserhalb des Arbeitsverhältnisses entwickelte, produktiv genutzte Anwendungen.
+					Ausführliche Beschreibungen unter {contact.website}/work/.
+				</p>
+				{
+					sideProjects.map((project) => (
+						<div class="entry">
+							<div class="entry-head">
+								<h3 class="entry-title">{project.name}</h3>
+								<span class="entry-date">{project.period}</span>
+							</div>
+							<p class="entry-org">{project.role}</p>
+							<ul>
+								<li>{project.cvLine}</li>
+								{project.liveUrl && <li>Live-Anwendung: {project.liveUrl}</li>}
+								{project.repoUrl && <li>Quellcode: {project.repoUrl}</li>}
+							</ul>
+						</div>
+					))
+				}
+			</section>
+
+			<section>
+				<h2 class="section-title">Aus- und Weiterbildung</h2>
+				{
+					education.map((edu) => (
+						<div class="entry">
+							<div class="entry-head">
+								<h3 class="entry-title">{edu.title}</h3>
+								<span class="entry-date">
+									{edu.startDate}
+									{edu.endDate && ` – ${edu.endDate}`}
+								</span>
+							</div>
+							<p class="entry-org">{edu.organization}</p>
+							{edu.bullets && edu.bullets.length > 0 && (
+								<ul>
+									{edu.bullets.map((b) => (
+										<li>{b}</li>
+									))}
+								</ul>
+							)}
+						</div>
+					))
+				}
+			</section>
+
+			<section>
+				<h2 class="section-title">Kernkompetenzen</h2>
+				{
+					skills.map((group) => (
+						<div class="skill-group">
+							<strong>{group.title}:</strong>{' '}
+							{group.items.map((item) => item.name).join(', ')}
+						</div>
+					))
+				}
+			</section>
+
+			<section>
+				<h2 class="section-title">Sprachen</h2>
+				<ul class="langs">
+					{
+						languages.map((lang) => (
+							<li>
+								<strong>{lang.language}</strong> {lang.level}
+							</li>
+						))
+					}
+				</ul>
+			</section>
+
+			<section>
+				<h2 class="section-title">Weitere Angaben</h2>
+				<div class="meta-line">
+					<div><strong>Geburtsdatum:</strong> {personal.birthDate}</div>
+					<div><strong>Familie:</strong> {personal.family}</div>
+					<div><strong>Nationalität:</strong> {personal.nationality}</div>
+					<div><strong>Führerschein:</strong> {meta.drivingLicense}</div>
+					<div><strong>Anstellungspensum:</strong> {meta.availability}</div>
+					<div><strong>Kündigungsfrist:</strong> {meta.noticePeriod}</div>
+					<div><strong>Referenzen:</strong> {meta.references}</div>
+					<div><strong>Interessen:</strong> {meta.interests}</div>
+				</div>
+			</section>
+
+			<p class="footnote">
+				Arbeitszeugnisse, Diplome und weitere Unterlagen: {contact.website}/dokumente/
+			</p>
+		</article>
+
+		<style is:global>
+			:root {
+				color-scheme: light;
+			}
+			*,
+			*::before,
+			*::after {
+				box-sizing: border-box;
+			}
+			html {
+				-webkit-text-size-adjust: 100%;
+			}
+			body {
+				margin: 0;
+				font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Helvetica,
+					Arial, sans-serif;
+				font-size: 11pt;
+				line-height: 1.5;
+				color: #111;
+				background: #f4f4f2;
+				padding: 32px 16px;
+			}
+
+			.page {
+				max-width: 800px;
+				margin: 0 auto;
+				background: #fff;
+				padding: 56px 64px;
+				box-shadow: 0 8px 40px rgba(0, 0, 0, 0.06);
+			}
+
+			.toolbar {
+				max-width: 800px;
+				margin: 0 auto 16px;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				gap: 12px;
+				font-size: 12px;
+				color: #666;
+			}
+			.toolbar a,
+			.toolbar button {
+				display: inline-flex;
+				align-items: center;
+				gap: 6px;
+				font-family: inherit;
+				font-size: 12px;
+				padding: 8px 14px;
+				border: 1px solid #ccc;
+				border-radius: 999px;
+				background: #fff;
+				color: #111;
+				cursor: pointer;
+				text-decoration: none;
+				transition: background 0.15s ease;
+			}
+			.toolbar a:hover,
+			.toolbar button:hover {
+				background: #f4f4f2;
+			}
+
+			header.cv-head {
+				border-bottom: 2px solid #111;
+				padding-bottom: 18px;
+				margin-bottom: 24px;
+			}
+			h1 {
+				font-size: 26pt;
+				font-weight: 700;
+				letter-spacing: -0.01em;
+				margin: 0 0 4px;
+				color: #111;
+			}
+			.role {
+				font-size: 13pt;
+				color: #444;
+				margin: 0 0 14px;
+				font-weight: 500;
+			}
+			.contact-line {
+				font-size: 10.5pt;
+				color: #444;
+				margin: 0 0 2px;
+			}
+			.contact-line a {
+				color: #444;
+				text-decoration: none;
+			}
+			.contact-line a:hover {
+				text-decoration: underline;
+			}
+			.contact-line .sep {
+				margin: 0 8px;
+				color: #aaa;
+			}
+
+			h2.section-title {
+				font-size: 11pt;
+				font-weight: 700;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				margin: 28px 0 12px;
+				padding-bottom: 4px;
+				border-bottom: 1px solid #ccc;
+				color: #111;
+			}
+
+			.summary {
+				margin: 0 0 8px;
+				font-size: 11pt;
+				line-height: 1.55;
+			}
+
+			.section-intro {
+				margin: 0 0 12px;
+				font-size: 10.5pt;
+				color: #444;
+			}
+
+			.entry {
+				margin-bottom: 16px;
+				page-break-inside: avoid;
+			}
+			.entry-head {
+				display: flex;
+				justify-content: space-between;
+				align-items: baseline;
+				gap: 12px;
+				flex-wrap: wrap;
+			}
+			.entry-title {
+				font-size: 11.5pt;
+				font-weight: 700;
+				margin: 0;
+				color: #111;
+			}
+			.entry-date {
+				font-size: 10pt;
+				color: #666;
+				white-space: nowrap;
+			}
+			.entry-org {
+				font-size: 10.5pt;
+				color: #444;
+				margin: 2px 0 6px;
+				font-style: italic;
+			}
+			.entry ul {
+				margin: 4px 0 0;
+				padding-left: 18px;
+			}
+			.entry li {
+				font-size: 10.5pt;
+				line-height: 1.5;
+				margin-bottom: 2px;
+			}
+
+			.skill-group {
+				margin-bottom: 8px;
+				font-size: 10.5pt;
+			}
+			.skill-group strong {
+				color: #111;
+			}
+
+			.langs {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+				gap: 4px 24px;
+				font-size: 10.5pt;
+			}
+			.langs li strong {
+				display: inline-block;
+				min-width: 110px;
+			}
+
+			.meta-line {
+				margin-top: 4px;
+				font-size: 10pt;
+				color: #666;
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+				gap: 6px 24px;
+			}
+			.meta-line strong {
+				color: #111;
+			}
+
+			.footnote {
+				margin: 24px 0 0;
+				padding-top: 10px;
+				border-top: 1px solid #ccc;
+				font-size: 9.5pt;
+				color: #666;
+			}
+
+			@page {
+				size: A4;
+				margin: 14mm 16mm;
+			}
+
+			@media print {
+				body {
+					background: #fff;
+					padding: 0;
+					font-size: 10.5pt;
+				}
+				.toolbar {
+					display: none;
+				}
+				.page {
+					max-width: none;
+					margin: 0;
+					padding: 0;
+					box-shadow: none;
+				}
+				h1 {
+					font-size: 22pt;
+				}
+				.role {
+					font-size: 12pt;
+				}
+				h2.section-title {
+					margin-top: 18px;
+				}
+				.entry {
+					margin-bottom: 12px;
+				}
+				a {
+					color: inherit;
+					text-decoration: none;
+				}
+			}
+		</style>
+
+		<script>
+			document.getElementById('printBtn')!.addEventListener('click', () => window.print());
+			if (new URLSearchParams(location.search).get('print') === '1') {
+				window.addEventListener('load', () => setTimeout(() => window.print(), 400));
+			}
+		</script>
+	</body>
+</html>
