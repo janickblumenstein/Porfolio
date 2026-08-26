@@ -19,10 +19,13 @@ import {
 	education,
 	skills,
 	skillLevelLabels,
-	sideProjects,
 	languages,
 	meta,
 } from '../data/cv';
+import { cvPdf } from '../lib/cvPdf';
+import { getSideProjects } from '../lib/projects';
+
+const sideProjects = await getSideProjects();
 
 const usedLevels = [
 	...new Set(
@@ -43,20 +46,24 @@ const usedLevels = [
 		/>
 		<meta name="robots" content="index, follow" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link
-			href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&family=Rubik:wght@500;600&display=swap"
-			rel="stylesheet"
-		/>
+		<link rel="preload" as="font" type="font/woff2" href="/fonts/public-sans-400-latin.woff2" crossorigin />
+		<link rel="preload" as="font" type="font/woff2" href="/fonts/rubik-600-latin.woff2" crossorigin />
+		<link rel="stylesheet" href="/fonts/fonts.css" />
 	</head>
 	<body>
 		<div class="toolbar" role="toolbar" aria-label="Aktionen">
 			<a href="/">← zur Website</a>
 			<div class="toolbar-actions">
 				<a href="/cv/ats/">Fassung für Bewerbungssysteme</a>
+				{
+					cvPdf.exists && (
+						<a class="primary" href={cvPdf.href} download>
+							PDF herunterladen
+						</a>
+					)
+				}
 				<button type="button" id="printBtn" aria-label="Lebenslauf drucken oder als PDF speichern">
-					Drucken / als PDF speichern
+					Drucken
 				</button>
 			</div>
 		</div>
@@ -344,6 +351,15 @@ const usedLevels = [
 			.toolbar a:hover,
 			.toolbar button:hover {
 				background: var(--accent-soft);
+			}
+			.toolbar a.primary {
+				background: var(--accent);
+				border-color: var(--accent);
+				color: #fff;
+				font-weight: 600;
+			}
+			.toolbar a.primary:hover {
+				background: #58107f;
 			}
 
 			/* ---------- Kopf ---------- */

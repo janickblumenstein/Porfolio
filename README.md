@@ -1,30 +1,40 @@
-# Astro Starter Kit: Portfolio
+# buildwithjanick.dev
 
-```sh
-npm create astro@latest -- --template portfolio
-```
+Persönliche Website und Lebenslauf von Janick Blumenstein. Gebaut mit [Astro](https://astro.build), statisch ausgeliefert.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/portfolio)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/portfolio)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/portfolio/devcontainer.json)
+## 👉 Inhalte pflegen
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+**[DOKUMENTATION.md](./DOKUMENTATION.md)** erklärt Schritt für Schritt, wie du ein Projekt hinzufügst, den Lebenslauf änderst oder Dokumente hochlädst — und wo welche Angabe steht, damit du nichts doppelt pflegst.
 
-![portfolio](https://user-images.githubusercontent.com/357379/210779178-a98f0fb7-6b1a-4068-894c-8e1403e26654.jpg)
+Kurzfassung: Inhalte stehen in `src/data/cv.ts` (alles über dich) und `src/content/work/*.md` (ein Projekt pro Datei). Alles andere leitet sich daraus ab.
 
-## 🧞 Commands
+## Befehle
 
-All commands are run from the root of the project, from a terminal:
+Alle Befehle im Projektstamm ausführen:
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+| Befehl | Wirkung |
+| :--- | :--- |
+| `npm install` | Abhängigkeiten installieren |
+| `npm run dev` | Entwicklungsserver auf `localhost:4321` |
+| `npm run build` | Produktions-Build nach `./dist/` |
+| `npm run preview` | Build lokal ansehen, vor dem Deployment |
+| `npm run cv:pdf` | Lebenslauf-PDFs neu erzeugen — nach jeder CV-Änderung nötig |
 
-## 👀 Want to learn more?
+Für `npm run cv:pdf` einmalig `npx playwright install chromium` ausführen.
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+## Seiten
+
+| Adresse | Inhalt |
+| :--- | :--- |
+| `/` | Startseite |
+| `/work/` | Projektübersicht, `/work/<slug>/` je Detailseite |
+| `/about/` | Über mich |
+| `/cv/` | Lebenslauf, gestaltet — für menschliche Leser |
+| `/cv/ats/` | Lebenslauf als reiner Text — für Bewerbungssysteme |
+| `/dokumente/` | Lebenslauf-PDF, Arbeitszeugnisse, Diplome |
+
+## Technisches
+
+- **Keine externen Requests im Betrieb.** Schriften liegen unter `public/fonts/` und werden selbst ausgeliefert.
+- **Zwei CV-Fassungen, eine Datenquelle.** Beide rendern aus `src/data/cv.ts` und können nicht auseinanderlaufen.
+- **Private Projekte** stehen im `sideProject`-Block ihrer Markdown-Datei und erscheinen daraufhin automatisch im Lebenslauf und auf der Startseite.
